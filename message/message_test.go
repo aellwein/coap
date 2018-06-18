@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestTooShortMessageCausesError(t *testing.T) {
+func TestTooShortMessage(t *testing.T) {
 	Convey("Given a too short message", t, func() {
 		b := make([]byte, 2)
 
@@ -19,7 +19,7 @@ func TestTooShortMessageCausesError(t *testing.T) {
 	})
 }
 
-func TestInvalidMessageVersionCausesError(t *testing.T) {
+func TestInvalidMessageVersion(t *testing.T) {
 	Convey("Given a message with an invalid version", t, func() {
 		b := []byte{0xCA, 0xFE, 0xBA, 0xBE}
 
@@ -33,8 +33,22 @@ func TestInvalidMessageVersionCausesError(t *testing.T) {
 	})
 }
 
+func TestInvalidTokenLength(t *testing.T) {
+	Convey("Given a message with invalid token length", t, func() {
+		b := []byte{0x4A, 0x02, 0x22, 0x72, 0x04, 0x71, 0xbd, 0x4a, 0xf3, 0xa3, 0x47, 0x09}
+
+		Convey("When decoded", func() {
+			_, err := Decode(b, nil)
+
+			Convey("'Invalid Token Length' is indicated by error", func() {
+				So(err, ShouldEqual, InvalidTokenLength)
+			})
+		})
+	})
+}
+
 func TestMessageCodeIsParsedCorrectly(t *testing.T) {
-	Convey("Given a message with code class ", t, func() {
+	Convey("Given a message with code class 0.2", t, func() {
 		b := []byte{0x48, 0x02, 0x22, 0x72, 0x04, 0x71, 0xbd, 0x4a, 0xf3, 0xa3, 0x47, 0x09}
 
 		Convey("When decoded", func() {
@@ -46,6 +60,5 @@ func TestMessageCodeIsParsedCorrectly(t *testing.T) {
 				So(msg.Code.CodeDetail, ShouldEqual, 2)
 			})
 		})
-
 	})
 }
