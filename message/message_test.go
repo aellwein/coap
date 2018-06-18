@@ -76,3 +76,18 @@ func TestMessageCodeIsParsedCorrectly(t *testing.T) {
 		})
 	})
 }
+func TestMessageToString(t *testing.T) {
+	Convey("Given a valid message", t, func() {
+		b := []byte{0x48, 0x02, 0x22, 0x72, 0x04, 0x71, 0xbd, 0x4a, 0xf3, 0xa3, 0x47, 0x09}
+
+		Convey("When decoded", func() {
+			msg, err := Decode(b, nil)
+
+			Convey("the stringified message must be equal to expected output", func() {
+				So(err, ShouldBeNil)
+				So(msg.String(), ShouldEqual, "Message{type=CON, code=0.02, id=8818, tkn=0x471BD4AF3A34709 (8), from=<nil>}")
+			})
+		})
+	})
+}
+
