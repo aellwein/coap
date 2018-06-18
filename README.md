@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/aellwein/coap.svg?branch=develop)](https://travis-ci.org/aellwein/coap)
 
 coap
 ====
