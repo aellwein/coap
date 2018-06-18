@@ -47,8 +47,8 @@ func TestInvalidTokenLength(t *testing.T) {
 	})
 }
 
-func TestMessageIsCorruptedOnToken(t *testing.T) {
-	Convey("Given a message with valid token length", t, func() {
+func TestMessageIsCorruptedOnShortToken(t *testing.T) {
+	Convey("Given a message with valid token length but short token content", t, func() {
 		b := []byte{0x48, 0x02, 0x22, 0x72, 0x04, 0x71, 0xbd, 0x4a, 0xf3}
 
 		Convey("When decoded", func() {
