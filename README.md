@@ -1,33 +1,31 @@
+# coap
+[![Coverage Status](https://img.shields.io/coveralls/github/aellwein/coap/develop.svg)](https://coveralls.io/github/aellwein/coap?branch=develop)
 [![Build Status](https://travis-ci.org/aellwein/coap.svg?branch=develop)](https://travis-ci.org/aellwein/coap) 
-[![Coverage Status](https://coveralls.io/repos/github/aellwein/coap/badge.svg?branch=develop&service=github)](https://coveralls.io/github/aellwein/coap?branch=develop)
 
-coap
-====
 
-[Constraint Application Protocol (CoAP)](http://coap.technology) implementation, based on 
+[Constrained Application Protocol (CoAP)](http://coap.technology) implementation, based on 
 [RFC7252](https://tools.ietf.org/html/rfc7252) in [Golang](https://golang.org).
 
-Current Status
---------------
+## Current Status
+
 In development, not usable yet.
 
-Installation
-------------
+## Installation
+
+``go get -u github.com/aellwein/coap``
+
+## Usage
+
 TBD
 
-Usage
------
-TBD
+## Development
 
-Development
------------
-
-``$ go get -u github.com/aellwein/coap``
-
-``$ dep ensure -v``
+* get the project: ``go get -u github.com/aellwein/coap``
+* get [Dep](https://github.com/golang/dep) tool: ``curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh``
+* ensure that dependencies are installed: ``dep ensure -v``
+* get coding!
 
 
-License
--------
+## License
 
 [MIT License](LICENSE)
