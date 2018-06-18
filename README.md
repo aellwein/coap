@@ -1,6 +1,6 @@
 # coap
 [![Coverage Status](https://img.shields.io/coveralls/github/aellwein/coap/develop.svg)](https://coveralls.io/github/aellwein/coap?branch=develop)
-[![Build Status](https://travis-ci.org/aellwein/coap.svg?branch=develop)](https://travis-ci.org/aellwein/coap) 
+[![Build Status](https://img.shields.io/travis/aellwein/coap/develop.svg)](https://travis-ci.org/aellwein/coap) 
 
 
 [Constrained Application Protocol (CoAP)](http://coap.technology) implementation, based on 
