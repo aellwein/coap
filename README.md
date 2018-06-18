@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/aellwein/coap.svg?branch=develop)](https://travis-ci.org/aellwein/coap) 
-[![Coverage Status](https://coveralls.io/repos/github/aellwein/coap/badge.svg?branch=develop)](https://coveralls.io/github/aellwein/coap?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/aellwein/coap/badge.svg?branch=develop&service=github)](https://coveralls.io/github/aellwein/coap?branch=develop)
 
 coap
 ====
