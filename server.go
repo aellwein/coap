@@ -4,7 +4,9 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/aellwein/coap/logging"
+	"github.com/aellwein/coap/message"
 	"net"
+	"strings"
 )
 
 type CoapPort uint16
@@ -81,6 +83,26 @@ func (server *Server) ListenOn(port CoapPort) error {
 		if err != nil {
 			logging.Sugar.Debug(err)
 		}
-		logging.Sugar.Debugf("received packet from %s: \n%s\n", peer, hex.Dump(buffer[0:n]))
+		logging.Sugar.Debugf("received packet from %s: \n%s", peer, hex.Dump(buffer[0:n]))
+		msg, err := message.DecodeMessage(buffer[0:n], peer)
+		if err != nil {
+			logging.Sugar.Debugf("error decoding message: %v", err)
+		}
+		logging.Sugar.Debugf("message received: %v", msg)
+		logging.Sugar.Debugf(dumpEncoded(buffer[0:n]))
 	}
+}
+
+func dumpEncoded(b []byte) string {
+	var builder strings.Builder
+	builder.WriteString("[]byte{")
+	for n, i := range b {
+		builder.WriteString(" ")
+		builder.WriteString(fmt.Sprintf("0x%02x,", i))
+		if n != 0 && n%16 == 0 {
+			builder.WriteString("\n")
+		}
+	}
+	builder.WriteString(" }")
+	return builder.String()
 }

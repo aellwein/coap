@@ -25,6 +25,7 @@ var (
 	PacketIsTooShort      = errors.New("packet is too short")
 	InvalidMessageVersion = errors.New("invalid message version")
 	InvalidTokenLength    = errors.New("invalid token length")
+	MessageFormatError    = errors.New("message format error")
 )
 
 //func decodeOptions(buffer []byte, opts map[OptionNumber][]OptionValue) (error, bool, []byte) {
@@ -32,7 +33,7 @@ var (
 //}
 
 // Reads and parses a CoAP Message from packet
-func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
+func DecodeMessage(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 
 	if len(buffer) < 4 {
 		// packet is too short
@@ -64,27 +65,22 @@ func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 	tkn := uint64(0)
 
 	if tokenLength != 0 {
-		tkn = binary.BigEndian.Uint64(buffer[4 : 4+tokenLength])
+		// TODO
+		tknBytes := make([]byte, 8)
+		copy(tknBytes, buffer[4:int(4+tokenLength)])
+		tkn = binary.BigEndian.Uint64(tknBytes)
+		fmt.Printf("token: 0x%x", tkn)
 	}
 
+	opts := make(OptionsType)
+	buf := buffer[4+int(tokenLength):]
+	var err error
+
 	// parse options, if any
-	//if len(buffer) > int(4+tkl) {
-	//	b := buffer[4+tkl:]
-	//	opts := make(map[OptionNumber][]OptionValue)
-	//	for {
-	//		var (
-	//			err error
-	//			n   bool
-	//		)
-	//		err, n, b = decodeOptions(b, opts)
-	//		if err != nil {
-	//			return nil, err
-	//		}
-	//		if !n {
-	//			break
-	//		}
-	//	}
-	//}
+	err = decodeOptions(opts, buf)
+	if err != nil {
+		return nil, err
+	}
 
 	msg := &Message{
 		Type:        MessageType(mType),
@@ -96,6 +92,7 @@ func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 		MessageID: MessageIdType(messageId),
 		Token:     TokenType(tkn),
 		Source:    peer,
+		Options:   &opts,
 	}
 
 	return msg, nil

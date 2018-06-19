@@ -7,22 +7,22 @@ type MessageType int8
 
 // Message types used in CoAP.
 const (
-	CON MessageType = iota
-	NON
-	ACK
-	RST
+	Confirmable MessageType = iota
+	NonConfirmable
+	Acknowledgement
+	Reset
 )
 
 // message type to string
 func (mt MessageType) String() string {
 	switch mt {
-	case CON:
+	case Confirmable:
 		return "CON"
-	case NON:
+	case NonConfirmable:
 		return "NON"
-	case ACK:
+	case Acknowledgement:
 		return "ACK"
-	case RST:
+	case Reset:
 		return "RST"
 	default:
 		logging.Sugar.Panicf("unknown message type: %d", mt)
