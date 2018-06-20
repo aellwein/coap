@@ -12,13 +12,12 @@ const MessageVersion byte = 0x01
 
 // The CoAP message.
 type Message struct {
-	Type        MessageType
-	TokenLength TokenLengthType
-	Code        CodeType
-	MessageID   MessageIdType
-	Token       TokenType
-	Source      *net.UDPAddr
-	Options     *OptionsType
+	Type      MessageType
+	Code      CodeType
+	MessageID MessageIdType
+	Token     TokenType
+	Source    *net.UDPAddr
+	Options   *OptionsType
 }
 
 var (
@@ -62,14 +61,12 @@ func DecodeMessage(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 	codeDetail := buffer[1] & 31
 	messageId := binary.BigEndian.Uint16(buffer[2:])
 
-	tkn := uint64(0)
-
+	var tkn TokenType
 	if tokenLength != 0 {
-		// TODO
-		tknBytes := make([]byte, 8)
-		copy(tknBytes, buffer[4:int(4+tokenLength)])
-		tkn = binary.BigEndian.Uint64(tknBytes)
-		fmt.Printf("token: 0x%x", tkn)
+		tkn = make([]byte, tokenLength)
+		copy(tkn, buffer[4:4+tokenLength])
+	} else {
+		tkn = []byte{}
 	}
 
 	opts := make(OptionsType)
@@ -77,20 +74,19 @@ func DecodeMessage(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 	var err error
 
 	// parse options, if any
-	err = decodeOptions(opts, buf)
+	err = decodeOptions(&opts, buf)
 	if err != nil {
 		return nil, err
 	}
 
 	msg := &Message{
-		Type:        MessageType(mType),
-		TokenLength: TokenLengthType(tokenLength),
+		Type: MessageType(mType),
 		Code: CodeType{
 			CodeClass:  CodeClassType(codeClass),
 			CodeDetail: CodeDetailType(codeDetail),
 		},
 		MessageID: MessageIdType(messageId),
-		Token:     TokenType(tkn),
+		Token:     tkn,
 		Source:    peer,
 		Options:   &opts,
 	}
@@ -100,11 +96,10 @@ func DecodeMessage(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 
 // Stringify message
 func (m *Message) String() string {
-	return fmt.Sprintf("Message{type=%v, code=%v, id=%v, tkn=0x%0X (%d), from=%v}",
+	return fmt.Sprintf("Message{type=%v, code=%v, id=%v, tkn=%v, from=%v}",
 		m.Type,
 		m.Code,
 		m.MessageID,
 		m.Token,
-		m.TokenLength,
 		m.Source)
 }

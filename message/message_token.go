@@ -1,7 +1,18 @@
 package message
 
-// TKL, up to 4 bits (values 0-8).
-type TokenLengthType uint8
+import (
+	"bytes"
+	"fmt"
+)
 
 // Token, max 8 bytes.
-type TokenType uint64
+type TokenType []byte
+
+func (t TokenType) String() string {
+	var b bytes.Buffer
+	b.WriteString("0x")
+	for _, i := range t {
+		b.WriteString(fmt.Sprintf("%02x", i))
+	}
+	return b.String()
+}
