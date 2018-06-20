@@ -87,7 +87,7 @@ func TestMessageToString(t *testing.T) {
 
 			c.Convey("the stringified message must be equal to expected output", func() {
 				c.So(err, c.ShouldBeNil)
-				c.So(msg.String(), c.ShouldEqual, "Message{type=CON, code=0.02, id=8818, tkn=0x471BD4AF3A34709 (8), from=<nil>}")
+				c.So(msg.String(), c.ShouldEqual, "Message{type=CON, code=0.02, id=8818, tkn=0x0471bd4af3a34709, from=<nil>}")
 			})
 		})
 	})
