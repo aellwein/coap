@@ -98,7 +98,7 @@ func dumpEncoded(b []byte) string {
 	builder.WriteString("[]byte{")
 	for n, i := range b {
 		builder.WriteString(" ")
-		builder.WriteString(fmt.Sprintf("0x%02x,", i))
+		builder.WriteString(fmt.Sprintf("0x%02X,", i))
 		if n != 0 && n%16 == 0 {
 			builder.WriteString("\n")
 		}
