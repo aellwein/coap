@@ -1,6 +1,7 @@
 package message
 
 import (
+	"bytes"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -26,6 +27,7 @@ var (
 	InvalidMessageVersion = errors.New("invalid message version")
 	InvalidTokenLength    = errors.New("invalid token length")
 	MessageFormatError    = errors.New("message format error")
+	InvalidOptionNumber   = errors.New("invalid option number")
 )
 
 //func decodeOptions(buffer []byte, opts map[OptionNumber][]OptionValue) (error, bool, []byte) {
@@ -115,4 +117,18 @@ func (m *Message) String() string {
 		m.Options,
 		m.Payload,
 		m.Source)
+}
+
+func HexContent(p []byte) string {
+	var b bytes.Buffer
+	b.WriteString("[")
+	for n, i := range p {
+		if n == 0 {
+			b.WriteString(fmt.Sprintf("0x%02X", i))
+		} else {
+			b.WriteString(fmt.Sprintf(", 0x%02X", i))
+		}
+	}
+	b.WriteString("]")
+	return b.String()
 }
