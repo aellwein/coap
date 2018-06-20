@@ -1,8 +1,6 @@
 package message
 
 import (
-	"encoding/hex"
-	"fmt"
 	c "github.com/smartystreets/goconvey/convey"
 	"testing"
 )
@@ -87,7 +85,7 @@ func TestMessageToString(t *testing.T) {
 
 			c.Convey("the stringified message must be equal to expected output", func() {
 				c.So(err, c.ShouldBeNil)
-				c.So(msg.String(), c.ShouldEqual, "Message{type=CON, code=0.02, id=8818, tkn=0x0471bd4af3a34709, from=<nil>}")
+				c.So(msg.String(), c.ShouldEqual, "Message{type=CON, code=0.02, id=8818, tkn=0x0471BD4AF3A34709, options=&map[], payload=[0x02, 0x22, 0x72, 0x04, 0x71, 0xBD, 0x4A, 0xF3, 0xA3, 0x47, 0x09], from=<nil>}")
 			})
 		})
 	})
@@ -100,8 +98,6 @@ func TestParseOptions(t *testing.T) {
 			0x64, 0x47, 0x65, 0x70, 0x3d, 0x61, 0x6c, 0x65, 0x78, 0x03, 0x62, 0x3d, 0x55, 0x06, 0x6c, 0x74,
 			0x3d, 0x33, 0x30, 0x30,
 		}
-		fmt.Print(hex.Dump(b))
-
 		c.Convey("When decoded", func() {
 			_, err := DecodeMessage(b, nil)
 
