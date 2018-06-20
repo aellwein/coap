@@ -18,6 +18,7 @@ type Message struct {
 	Token     TokenType
 	Source    *net.UDPAddr
 	Options   *OptionsType
+	Payload   PayloadType
 }
 
 var (
@@ -71,12 +72,21 @@ func DecodeMessage(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 
 	opts := make(OptionsType)
 	buf := buffer[4+int(tokenLength):]
-	var err error
 
 	// parse options, if any
-	err = decodeOptions(&opts, buf)
+	pos, err := decodeOptions(&opts, buf)
 	if err != nil {
 		return nil, err
+	}
+
+	// parse payload, if any
+	payloadLen := len(buffer) - pos
+	var payload PayloadType
+	if payloadLen <= 1 {
+		return nil, MessageFormatError
+	} else {
+		payload = make([]byte, payloadLen-1)
+		copy(payload, buffer[pos+1:])
 	}
 
 	msg := &Message{
@@ -89,6 +99,7 @@ func DecodeMessage(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 		Token:     tkn,
 		Source:    peer,
 		Options:   &opts,
+		Payload:   payload,
 	}
 
 	return msg, nil
@@ -96,10 +107,12 @@ func DecodeMessage(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 
 // Stringify message
 func (m *Message) String() string {
-	return fmt.Sprintf("Message{type=%v, code=%v, id=%v, tkn=%v, from=%v}",
+	return fmt.Sprintf("Message{type=%v, code=%v, id=%v, tkn=%v, options=%v, payload=%v, from=%v}",
 		m.Type,
 		m.Code,
 		m.MessageID,
 		m.Token,
+		m.Options,
+		m.Payload,
 		m.Source)
 }
