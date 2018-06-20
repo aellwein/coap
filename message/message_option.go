@@ -17,7 +17,7 @@ type OptionValueType []byte
 type OptionsType map[OptionNumberType][]OptionValueType
 
 // decode option from message buffer and return the rest of the buffer, if any
-func decodeOptions(options OptionsType, buffer []byte) error {
+func decodeOptions(options *OptionsType, buffer []byte) error {
 	var (
 		optionDelta  int
 		optionLength int
@@ -45,7 +45,7 @@ func decodeOptions(options OptionsType, buffer []byte) error {
 				if len(buffer) < i+2 {
 					return PacketIsTooShort
 				}
-				optionDelta = int(binary.BigEndian.Uint16(buffer[i:i+2]) + 269)
+				optionDelta += int(binary.BigEndian.Uint16(buffer[i:i+2]) + 269)
 				i += 2
 
 			case 15:
@@ -57,7 +57,7 @@ func decodeOptions(options OptionsType, buffer []byte) error {
 					return nil
 				}
 			default:
-				optionDelta = int(od)
+				optionDelta += int(od)
 
 			}
 
