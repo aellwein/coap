@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"github.com/aellwein/coap/util"
 )
 
 type OptionFormat uint8
@@ -285,8 +286,6 @@ func (t OptionNumberType) String() string {
 
 func (opt *OptionsType) String() string {
 	var b bytes.Buffer
-	var n uint32
-
 	for k, v := range *opt {
 		b.WriteString(fmt.Sprintf("'%v'=[", k))
 		for _, i := range v {
@@ -306,9 +305,7 @@ func (opt *OptionsType) String() string {
 				b.WriteString("\",")
 
 			case Uint:
-				// TODO: something's wrong here. Investigate.
-				br := bytes.NewReader(i)
-				binary.Read(br, binary.BigEndian, &n)
+				n := util.ToBigEndianNumber(i)
 				b.WriteString(fmt.Sprintf("%d", n))
 				b.WriteString(",")
 			}
