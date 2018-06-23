@@ -231,7 +231,7 @@ func decodeOptions(options *OptionsType, buffer []byte) (int, error) {
 			if len(buffer) < i+1 {
 				return i, PacketIsTooShort
 			}
-			optionLength += int(buffer[i])
+			optionLength = int(buffer[i]) + 13
 			i++
 
 		case 14:
