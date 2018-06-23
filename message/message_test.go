@@ -1,8 +1,8 @@
 package message
 
 import (
-	"encoding/binary"
 	"fmt"
+	"github.com/aellwein/coap/util"
 	c "github.com/smartystreets/goconvey/convey"
 	"testing"
 )
@@ -115,7 +115,7 @@ func TestOptionsAreParsedCorrectly(t *testing.T) {
 			c.Convey("Message should have Uri-Port to be set to 5683", func() {
 				v, ok := (*m.Options)[UriPort]
 				c.So(ok, c.ShouldBeTrue)
-				c.So(binary.BigEndian.Uint32(v[0]), c.ShouldEqual, 5683)
+				c.So(util.ToBigEndianNumber(v[0]).(uint16), c.ShouldEqual, 5683)
 			})
 
 		})
