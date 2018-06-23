@@ -30,10 +30,6 @@ var (
 	InvalidOptionNumber   = errors.New("invalid option number")
 )
 
-//func decodeOptions(buffer []byte, opts map[OptionNumber][]OptionValue) (error, bool, []byte) {
-//
-//}
-
 // Reads and parses a CoAP Message from packet
 func DecodeMessage(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 
