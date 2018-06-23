@@ -239,7 +239,7 @@ func decodeOptions(options *OptionsType, buffer []byte) (int, error) {
 			if len(buffer) < i+2 {
 				return i, PacketIsTooShort
 			}
-			optionLength = int(binary.BigEndian.Uint16(buffer[i:i+2]) - 269)
+			optionLength = int(binary.BigEndian.Uint16(buffer[i:i+2]) + 269)
 			i += 2
 
 		case 15:
