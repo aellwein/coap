@@ -384,3 +384,25 @@ func TestMessageFormatError(t *testing.T) {
 		})
 	})
 }
+
+func TestMessageFormatErrorOnInvalidOptionLength(t *testing.T) {
+	c.Convey("Given a message with invalid option length", t, func() {
+		/*
+			00000000  44 02 ec 8e 00 00 e8 17  39 6c 6f 63 61 6c 68 6f  |D.......9localho|
+			00000010  73 74 42 16 33 42 72 64  47 65 70 3d 61 6c 65 78  |stB.3BrdGep=alex|
+			00000020  03 62 3d 55 56 6c 74 3d  33 30 30                 |.b=U.lt=300     |
+		*/
+		b := []byte{
+			0x44, 0x02, 0x5D, 0x28, 0x00, 0x00, 0x82, 0x1C, 0x39, 0x6C, 0x6F, 0x63, 0x61, 0x6C, 0x68, 0x6F,
+			0x73, 0x74, 0x42, 0x16, 0x33, 0x42, 0x72, 0x64, 0x47, 0x65, 0x70, 0x3D, 0x61, 0x6C, 0x65, 0x78,
+			0x03, 0x62, 0x3D, 0x55, 0x5F, 0x6C, 0x74, 0x3D, 0x33, 0x30, 0x30,
+		}
+		c.Convey("When message is decoded", func() {
+			_, err := DecodeMessage(b, nil)
+
+			c.Convey("Then error should show 'MessageFormatError'", func() {
+				c.So(err, c.ShouldEqual, MessageFormatError)
+			})
+		})
+	})
+}
