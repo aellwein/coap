@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fmt"
 	"github.com/aellwein/coap/util"
 	c "github.com/smartystreets/goconvey/convey"
 	"strings"
@@ -128,6 +129,7 @@ func TestOptionsAreParsedCorrectly(t *testing.T) {
 
 			c.Convey("Then decode should not have errors", func() {
 				c.So(err, c.ShouldBeNil)
+				fmt.Printf("%v", m)
 			})
 			c.Convey("And message should have 4 options", func() {
 				c.So(len(*m.Options), c.ShouldEqual, 4)
