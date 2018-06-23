@@ -95,14 +95,14 @@ func (server *Server) ListenOn(port CoapPort) error {
 
 func dumpEncoded(b []byte) string {
 	var builder strings.Builder
-	builder.WriteString("[]byte{")
+	builder.WriteString("[]byte{\n")
 	for n, i := range b {
 		builder.WriteString(" ")
 		builder.WriteString(fmt.Sprintf("0x%02X,", i))
-		if n != 0 && n%16 == 0 {
+		if (n+1)%16 == 0 {
 			builder.WriteString("\n")
 		}
 	}
-	builder.WriteString(" }")
+	builder.WriteString("\n}")
 	return builder.String()
 }
