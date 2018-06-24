@@ -200,7 +200,7 @@ func decodeOptions(options *OptionsType, buffer []byte) (int, error) {
 			if len(buffer) < i+1 {
 				return i, PacketIsTooShort
 			}
-			optionDelta += int(buffer[i])
+			optionDelta = int(buffer[i]) + 13
 			i++
 
 		case 14:
@@ -208,7 +208,7 @@ func decodeOptions(options *OptionsType, buffer []byte) (int, error) {
 			if len(buffer) < i+2 {
 				return i, PacketIsTooShort
 			}
-			optionDelta += int(binary.BigEndian.Uint16(buffer[i:i+2]) + 269)
+			optionDelta = int(binary.BigEndian.Uint16(buffer[i:i+2]) + 269)
 			i += 2
 
 		case 15:
