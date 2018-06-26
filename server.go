@@ -84,7 +84,7 @@ func (server *Server) ListenOn(port CoapPort) error {
 			logging.Sugar.Debug(err)
 		}
 		logging.Sugar.Debugf("received packet from %s: \n%s", peer, hex.Dump(buffer[0:n]))
-		msg, err := message.DecodeMessage(buffer[0:n], peer)
+		msg, err := message.Decode(buffer[0:n], peer)
 		if err != nil {
 			logging.Sugar.Debugf("error decoding message: %v", err)
 		}
