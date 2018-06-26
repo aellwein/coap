@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"github.com/aellwein/coap/util"
+	"sort"
 )
 
 // Option value consists of arbitrary bytes.
@@ -111,6 +112,59 @@ func decodeOptions(options *OptionsType, buffer []byte) (int, error) {
 		}
 	}
 	return i, nil
+}
+
+func encodeNum(num uint16) (byte, []byte) {
+	switch {
+	case num < 13:
+		return byte(num), []byte{}
+	case num < 269:
+		return 13, []byte{byte(num - 13)}
+	default:
+		b := make([]byte, 2)
+		binary.BigEndian.PutUint16(b, uint16(num-269))
+		return 14, b
+	}
+}
+
+func getOptionLengthBytes(opt OptionValueType) (byte, []byte) {
+	return encodeNum(uint16(len(opt)))
+}
+
+func getOptionDeltaBytes(opt OptionNumberType, prev OptionNumberType) (byte, []byte) {
+	optDelta := opt - prev
+	return encodeNum(uint16(optDelta))
+}
+
+func encodeOptions(options *OptionsType) []byte {
+	var b bytes.Buffer
+
+	if len(*options) > 0 {
+
+		// to build proper delta, we sort the option numbers (map keys)
+		var optionNumbers []int
+		for k := range *options {
+			optionNumbers = append(optionNumbers, int(k))
+		}
+		sort.Ints(optionNumbers)
+
+		var optDeltaPrev OptionNumberType = 0
+		for _, i := range optionNumbers {
+			for _, j := range (*options)[OptionNumberType(i)] {
+				optDeltaByte, optDeltaBytes := getOptionDeltaBytes(OptionNumberType(i), optDeltaPrev)
+				optDeltaPrev = OptionNumberType(i)
+				optLenByte, optLenBytes := getOptionLengthBytes(j)
+				b.WriteByte((optDeltaByte << 4) & optLenByte)
+				if len(optDeltaBytes) > 0 {
+					b.Write(optDeltaBytes)
+				}
+				if len(optLenBytes) > 0 {
+					b.Write(optLenBytes)
+				}
+			}
+		}
+	}
+	return b.Bytes()
 }
 
 func (t OptionNumberType) String() string {

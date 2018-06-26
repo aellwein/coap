@@ -103,6 +103,28 @@ func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 	return msg, nil
 }
 
+// Encode the message to a byte array.
+func (m Message) Encode() []byte {
+	var pkt bytes.Buffer
+
+	pkt.WriteByte(byte(64 + byte(m.Type<<4) + byte(len(m.Token))))
+	pkt.WriteByte(byte(m.Code.CodeClass<<5) + byte(m.Code.CodeDetail))
+
+	msgId := make([]byte, 2)
+	binary.BigEndian.PutUint16(msgId, uint16(m.MessageID))
+	pkt.Write(msgId)
+	pkt.Write(m.Token)
+
+	pkt.Write(encodeOptions(m.Options))
+
+	if len(m.Payload) > 0 {
+		pkt.WriteByte(0xff)
+		pkt.Write(m.Payload)
+	}
+	fmt.Print(HexContent(pkt.Bytes()))
+	return pkt.Bytes()
+}
+
 // Stringify message
 func (m *Message) String() string {
 	return fmt.Sprintf("Message{type=%v, code=%v, id=%v, tkn=%v, options=%v, payload=%v, from=%v}",
