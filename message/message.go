@@ -31,7 +31,7 @@ var (
 )
 
 // Reads and parses a CoAP Message from packet
-func DecodeMessage(buffer []byte, peer *net.UDPAddr) (*Message, error) {
+func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 
 	if len(buffer) < 4 {
 		// packet is too short

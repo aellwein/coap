@@ -13,7 +13,7 @@ func TestTooShortMessage(t *testing.T) {
 		b := make([]byte, 2)
 
 		c.Convey("When decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 
 			c.Convey("Then 'Packet is too short' is indicated by error", func() {
 				c.So(err, c.ShouldEqual, PacketIsTooShort)
@@ -27,7 +27,7 @@ func TestInvalidMessageVersion(t *testing.T) {
 		b := []byte{0xCA, 0xFE, 0xBA, 0xBE}
 
 		c.Convey("When decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 
 			c.Convey("Then 'Invalid Message Version' is indicated by error", func() {
 				c.So(err, c.ShouldEqual, InvalidMessageVersion)
@@ -41,7 +41,7 @@ func TestInvalidTokenLength(t *testing.T) {
 		b := []byte{0x4A, 0x02, 0x22, 0x72, 0x04, 0x71, 0xbd, 0x4a, 0xf3, 0xa3, 0x47, 0x09}
 
 		c.Convey("When decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 
 			c.Convey("Then 'Invalid Token Length' is indicated by error", func() {
 				c.So(err, c.ShouldEqual, InvalidTokenLength)
@@ -55,7 +55,7 @@ func TestMessageIsCorruptedOnShortToken(t *testing.T) {
 		b := []byte{0x48, 0x02, 0x22, 0x72, 0x04, 0x71, 0xbd, 0x4a, 0xf3}
 
 		c.Convey("When decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 
 			c.Convey("Then 'Packet Is Too Short' is indicated by error", func() {
 				c.So(err, c.ShouldEqual, PacketIsTooShort)
@@ -69,7 +69,7 @@ func TestMessageCodeIsParsedCorrectly(t *testing.T) {
 		b := []byte{0x48, 0x02, 0x22, 0x72, 0x04, 0x71, 0xbd, 0x4a, 0xf3, 0xa3, 0x47, 0x09}
 
 		c.Convey("When decoded", func() {
-			msg, err := DecodeMessage(b, nil)
+			msg, err := Decode(b, nil)
 
 			c.Convey("Then code should be 0.2", func() {
 				c.So(err, c.ShouldBeNil)
@@ -125,7 +125,7 @@ func TestOptionsAreParsedCorrectly(t *testing.T) {
 			0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
 		}
 		c.Convey("When decoded", func() {
-			m, err := DecodeMessage(b, nil)
+			m, err := Decode(b, nil)
 
 			c.Convey("Then decode should not have errors", func() {
 				c.So(err, c.ShouldBeNil)
@@ -210,7 +210,7 @@ func TestInvalidOptionLengthCausesError(t *testing.T) {
 			0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
 		}
 		c.Convey("When decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 
 			c.Convey("Then decode should fail with 'PacketIsTooShort' error", func() {
 				c.So(err, c.ShouldEqual, PacketIsTooShort)
@@ -248,7 +248,7 @@ func TestMissingOptionExtendedValueCausesError(t *testing.T) {
 			0x03, 0x62, 0x3D, 0x55, 0x06, 0x6C, 0x74, 0x3D, 0x33, 0x30, 0x30, 0x0D, // cut off
 		}
 		c.Convey("When decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 
 			c.Convey("Then decode should fail with 'PacketIsTooShort' error", func() {
 				c.So(err, c.ShouldEqual, PacketIsTooShort)
@@ -308,7 +308,7 @@ func TestParseOptionWithLongExtendedLength(t *testing.T) {
 			0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
 		}
 		c.Convey("When decoded", func() {
-			m, err := DecodeMessage(b, nil)
+			m, err := Decode(b, nil)
 			c.Convey("Then Uri-Query[3] should be as expected", func() {
 				expected := strings.Join(
 					[]string{
@@ -335,7 +335,7 @@ func TestMissingLongExtendedLengthBytesCauseError(t *testing.T) {
 			0x03, 0x62, 0x3D, 0x55, 0x06, 0x6C, 0x74, 0x3D, 0x33, 0x30, 0x30, 0x0E, 0x00, // cut off on length
 		}
 		c.Convey("When decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 			c.Convey("Then the error should be 'PacketIsTooShort'", func() {
 				c.ShouldEqual(err, PacketIsTooShort)
 			})
@@ -356,7 +356,7 @@ func TestInvalidOptionNumber(t *testing.T) {
 			0x03, 0x62, 0x3D, 0x55, 0x16, 0x6C, 0x74, 0x3D, 0x33, 0x30, 0x30,
 		}
 		c.Convey("When message is decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 
 			c.Convey("Then error should show 'InvalidOptionNumber'", func() {
 				c.So(err, c.ShouldEqual, InvalidOptionNumber)
@@ -378,7 +378,7 @@ func TestMessageFormatError(t *testing.T) {
 			0x03, 0x62, 0x3D, 0x55, 0xF6, 0x6C, 0x74, 0x3D, 0x33, 0x30, 0x30,
 		}
 		c.Convey("When message is decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 
 			c.Convey("Then error should show 'MessageFormatError'", func() {
 				c.So(err, c.ShouldEqual, MessageFormatError)
@@ -400,7 +400,7 @@ func TestMessageFormatErrorOnInvalidOptionLength(t *testing.T) {
 			0x03, 0x62, 0x3D, 0x55, 0x5F, 0x6C, 0x74, 0x3D, 0x33, 0x30, 0x30,
 		}
 		c.Convey("When message is decoded", func() {
-			_, err := DecodeMessage(b, nil)
+			_, err := Decode(b, nil)
 
 			c.Convey("Then error should show 'MessageFormatError'", func() {
 				c.So(err, c.ShouldEqual, MessageFormatError)
