@@ -78,11 +78,10 @@ func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 	}
 
 	// parse payload, if any
+	pos += int(tokenLength) + 4
 	payloadLen := len(buffer) - pos
 	var payload PayloadType
-	if payloadLen <= 1 {
-		return nil, MessageFormatError
-	} else {
+	if payloadLen > 0 {
 		payload = make([]byte, payloadLen-1)
 		copy(payload, buffer[pos+1:])
 	}

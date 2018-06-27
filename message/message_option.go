@@ -154,13 +154,14 @@ func encodeOptions(options *OptionsType) []byte {
 				optDeltaByte, optDeltaBytes := getOptionDeltaBytes(OptionNumberType(i), optDeltaPrev)
 				optDeltaPrev = OptionNumberType(i)
 				optLenByte, optLenBytes := getOptionLengthBytes(j)
-				b.WriteByte((optDeltaByte << 4) & optLenByte)
+				b.WriteByte((optDeltaByte << 4) + optLenByte)
 				if len(optDeltaBytes) > 0 {
 					b.Write(optDeltaBytes)
 				}
 				if len(optLenBytes) > 0 {
 					b.Write(optLenBytes)
 				}
+				b.Write(j)
 			}
 		}
 	}
