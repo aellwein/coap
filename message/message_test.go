@@ -1,7 +1,6 @@
 package message
 
 import (
-	"encoding/hex"
 	"fmt"
 	"github.com/aellwein/coap/util"
 	c "github.com/smartystreets/goconvey/convey"
@@ -440,10 +439,8 @@ func TestEncodeDecodedMessageGivesTheSameByteContent(t *testing.T) {
 
 			c.Convey("And encoded again", func() {
 				b2 := m.Encode()
-				println(hex.Dump(b))
-				println(hex.Dump(b2))
 				c.Convey("Then the encoded message gives the same byte content", func() {
-					c.So(b2, c.ShouldEqual, b)
+					c.So(b2, c.ShouldResemble, b)
 				})
 			})
 		})
