@@ -51,6 +51,11 @@ func decodeOptions(options *OptionsType, buffer []byte) (int, error) {
 				return i, MessageFormatError
 			} else {
 				// end of options detected
+				// Spec: "The presence of a marker followed by a zero-length payload MUST be processed as a
+				// message format error."
+				if len(buffer) == i+1 {
+					return i, MessageFormatError
+				}
 				return i, nil
 			}
 		default:
