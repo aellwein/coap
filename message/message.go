@@ -120,7 +120,6 @@ func (m Message) Encode() []byte {
 		pkt.WriteByte(0xff)
 		pkt.Write(m.Payload)
 	}
-	fmt.Print(HexContent(pkt.Bytes()))
 	return pkt.Bytes()
 }
 
