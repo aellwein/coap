@@ -25,7 +25,8 @@ func (mt MessageType) String() string {
 	case Reset:
 		return "RST"
 	default:
-		logging.Sugar.Panicf("unknown message type: %d", mt)
+		logger := logging.LoggerFactory.GetLogger("message")
+		logger.PanicF("unknown message type: %d", mt)
 		return ""
 	}
 }

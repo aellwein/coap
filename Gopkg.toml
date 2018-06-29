@@ -26,6 +26,10 @@
 
 
 [[constraint]]
+  branch = "master"
+  name = "github.com/aellwein/slf4go"
+
+[[constraint]]
   name = "github.com/smartystreets/goconvey"
   version = "1.6.3"
 

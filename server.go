@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/aellwein/coap/logging"
 	"github.com/aellwein/coap/message"
+	"github.com/aellwein/slf4go"
 	"net"
 	"strings"
 )
@@ -23,6 +24,8 @@ type Server struct {
 	handlers map[string]RequestHandler
 }
 
+var logger slf4go.Logger
+
 // Get string representation of the server
 func (server Server) String() string {
 	return fmt.Sprintf("Server{ addr=%v, conn=%v, handlers=%v}",
@@ -33,6 +36,7 @@ func newServer(port CoapPort, handlers ...RequestHandler) (*Server, error) {
 	var err error
 	server := &Server{}
 
+	logger = logging.LoggerFactory.GetLogger("server")
 	server.addr, err = net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", port))
 
 	if err != nil {
@@ -81,15 +85,15 @@ func (server *Server) ListenOn(port CoapPort) error {
 	for {
 		n, peer, err := server.conn.ReadFromUDP(buffer)
 		if err != nil {
-			logging.Sugar.Debug(err)
+			logger.Debug(err)
 		}
-		logging.Sugar.Debugf("received packet from %s: \n%s", peer, hex.Dump(buffer[0:n]))
+		logger.DebugF("received packet from %s: \n%s", peer, hex.Dump(buffer[0:n]))
 		msg, err := message.Decode(buffer[0:n], peer)
 		if err != nil {
-			logging.Sugar.Debugf("error decoding message: %v", err)
+			logger.DebugF("error decoding message: %v", err)
 		}
-		logging.Sugar.Debugf("message received: %v", msg)
-		logging.Sugar.Debug("Go representation of the packet: ", dumpEncoded(buffer[0:n]))
+		logger.DebugF("message received: %v", msg)
+		logger.Debug("Go representation of the packet: ", dumpEncoded(buffer[0:n]))
 	}
 }
 

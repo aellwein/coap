@@ -3,9 +3,15 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/aellwein/slf4go"
+  packages = ["."]
+  revision = "6c17c316fc61c05cd1baad69ef05714efe30329c"
+
+[[projects]]
+  branch = "master"
   name = "github.com/gopherjs/gopherjs"
   packages = ["js"]
-  revision = "8dffc02ea1cb8398bb73f30424697c60fcf8d4c5"
+  revision = "0892b62f0d9fb5857760c3cfca837207185117ee"
 
 [[projects]]
   name = "github.com/jtolds/gls"
@@ -61,6 +67,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "608c01ab41d2c8c5d3ea8b668e57ff46318d143e8645c12a75bf8c57deeafc71"
+  inputs-digest = "a6d809a72f161cfb81d44404fd3167a0ec07ebf24787f78cdf99be5478b6eee0"
   solver-name = "gps-cdcl"
   solver-version = 1

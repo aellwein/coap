@@ -12,18 +12,17 @@ func onPOST(request coap.Request) error {
 }
 
 func main() {
-	logging.InitLogger(true)
+	logger := logging.LoggerFactory.GetLogger("server")
 	server, err := coap.NewInsecureCoapServer(coap.RequestHandler{Path: "/rd", HandlePOST: onPOST})
-
 	if err != nil {
-		logging.Sugar.Panic(err)
+		logger.Panic(err)
 	}
 
-	logging.Sugar.Debug(server)
+	logger.Debug(server)
 
 	err = server.Listen()
 
 	if err != nil {
-		logging.Sugar.Panic(err)
+		logger.Panic(err)
 	}
 }
