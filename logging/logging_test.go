@@ -27,3 +27,14 @@ func TestPanicLogging(t *testing.T) {
 		})
 	})
 }
+
+func TestPanicFLogging(t *testing.T) {
+	Convey("Given a logger", t, func() {
+		logger := LoggerFactory.GetLogger("test")
+		Convey("When logged on panic level", func() {
+			Convey("Then panic is expected", func() {
+				So(func() { logger.PanicF("panic with arg: %d!", 42) }, ShouldPanic)
+			})
+		})
+	})
+}
