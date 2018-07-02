@@ -1,4 +1,5 @@
 # coap
+[![Go Report Card](https://goreportcard.com/badge/github.com/aellwein/coap)](https://goreportcard.com/report/github.com/aellwein/coap)
 [![Coverage Status](https://img.shields.io/coveralls/github/aellwein/coap/develop.svg)](https://coveralls.io/github/aellwein/coap?branch=develop)
 [![Build Status](https://img.shields.io/travis/aellwein/coap/develop.svg)](https://travis-ci.org/aellwein/coap) 
 
