@@ -13,7 +13,7 @@ func onPOST(request coap.Request) error {
 
 func main() {
 	logger := logging.LoggerFactory.GetLogger("server")
-	server, err := coap.NewInsecureCoapServer(coap.RequestHandler{Path: "/rd", HandlePOST: onPOST})
+	server, err := coap.NewInsecureCoapServerWithDefaultParameters(coap.RequestHandler{Path: "/rd", HandlePOST: onPOST})
 	if err != nil {
 		logger.Panic(err)
 	}

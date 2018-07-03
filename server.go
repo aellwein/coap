@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/aellwein/coap/logging"
 	"github.com/aellwein/coap/message"
+	"github.com/aellwein/coap/transmission"
 	"github.com/aellwein/slf4go"
 	"net"
 	"strings"
@@ -19,20 +20,21 @@ const (
 const MaxPacketSize = 2048
 
 type Server struct {
-	addr     *net.UDPAddr
-	conn     *net.UDPConn
-	handlers map[string]RequestHandler
+	addr       *net.UDPAddr
+	conn       *net.UDPConn
+	parameters *transmission.Parameters
+	handlers   map[string]RequestHandler
 }
 
 var logger slf4go.Logger
 
 // Get string representation of the server
 func (server Server) String() string {
-	return fmt.Sprintf("Server{ addr=%v, conn=%v, handlers=%v}",
-		server.addr, server.conn, server.handlers)
+	return fmt.Sprintf("Server{ addr=%v, parameters=%v, conn=%v, handlers=%v}",
+		server.addr, server.parameters, server.conn, server.handlers)
 }
 
-func newServer(port CoapPort, handlers ...RequestHandler) (*Server, error) {
+func newServer(port CoapPort, parameters *transmission.Parameters, handlers ...RequestHandler) (*Server, error) {
 	var err error
 	server := &Server{}
 
@@ -43,6 +45,9 @@ func newServer(port CoapPort, handlers ...RequestHandler) (*Server, error) {
 		return nil, err
 	}
 
+	transmission.ValidateParameters(parameters)
+
+	server.parameters = parameters
 	server.handlers = make(map[string]RequestHandler)
 
 	for _, h := range handlers {
@@ -54,14 +59,26 @@ func newServer(port CoapPort, handlers ...RequestHandler) (*Server, error) {
 	return server, nil
 }
 
-// default CoAP Server on secure port.
-func NewSecureCoapServer(handlers ...RequestHandler) (*Server, error) {
-	return newServer(SecurePort, handlers...)
+// Creates a default CoAP Server on secure port using default transmission parameters.
+func NewSecureCoapServerWithDefaultParameters(handlers ...RequestHandler) (*Server, error) {
+	return newServer(SecurePort, transmission.NewDefaultParameters(), handlers...)
 }
 
-// default CoAP server on insecure port.
-func NewInsecureCoapServer(handlers ...RequestHandler) (*Server, error) {
-	return newServer(InsecurePort, handlers...)
+// Creates a default CoAP server on insecure port using default transmission parameters.
+func NewInsecureCoapServerWithDefaultParameters(handlers ...RequestHandler) (*Server, error) {
+	return newServer(InsecurePort, transmission.NewDefaultParameters(), handlers...)
+}
+
+// Creates a new CoAP server on secure port using given transmission parameters.
+func NewSecureCoapServer(parameters *transmission.Parameters, handlers ...RequestHandler) (*Server, error) {
+	params := transmission.CopyFrom(*parameters)
+	return newServer(SecurePort, params, handlers...)
+}
+
+// Creates a default CoAP server on insecure port using given transmission parameters.
+func NewInsecureCoapServer(parameters *transmission.Parameters, handlers ...RequestHandler) (*Server, error) {
+	params := transmission.CopyFrom(*parameters)
+	return newServer(InsecurePort, params, handlers...)
 }
 
 // Listen on default (insecure) port
