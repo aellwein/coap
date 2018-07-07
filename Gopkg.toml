@@ -29,14 +29,6 @@
   branch = "master"
   name = "github.com/aellwein/slf4go"
 
-[[constraint]]
-  name = "github.com/smartystreets/goconvey"
-  version = "1.6.3"
-
-[[constraint]]
-  name = "go.uber.org/zap"
-  version = "1.8.0"
-
 [prune]
   go-tests = true
   unused-packages = true

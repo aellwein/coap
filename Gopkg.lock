@@ -5,7 +5,13 @@
   branch = "master"
   name = "github.com/aellwein/slf4go"
   packages = ["."]
-  revision = "6c17c316fc61c05cd1baad69ef05714efe30329c"
+  revision = "ba006be5d7974844a46c1972284771df0b05105f"
+
+[[projects]]
+  name = "github.com/aellwein/slf4go-zap-adaptor"
+  packages = ["."]
+  revision = "d8df259440b5485aa528beb6ee2a12781c07596d"
+  version = "v0.1"
 
 [[projects]]
   branch = "master"
@@ -67,6 +73,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a6d809a72f161cfb81d44404fd3167a0ec07ebf24787f78cdf99be5478b6eee0"
+  inputs-digest = "e73a7b2210c7f78380ee9a48c98cb9b2673a822e211adc7326776afe49f548ec"
   solver-name = "gps-cdcl"
   solver-version = 1
