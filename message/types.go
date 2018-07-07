@@ -1,6 +1,8 @@
 package message
 
-import "github.com/aellwein/coap/logging"
+import (
+	"github.com/aellwein/slf4go"
+)
 
 // Basic message type, fits in 2 bits.
 type MessageType int8
@@ -25,8 +27,8 @@ func (mt MessageType) String() string {
 	case Reset:
 		return "RST"
 	default:
-		logger := logging.LoggerFactory.GetLogger("message")
-		logger.PanicF("unknown message type: %d", mt)
+		logger := slf4go.GetLogger("message")
+		logger.Panicf("unknown message type: %d", mt)
 		return ""
 	}
 }

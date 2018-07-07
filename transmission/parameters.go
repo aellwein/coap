@@ -2,7 +2,7 @@ package transmission
 
 import (
 	"fmt"
-	"github.com/aellwein/coap/logging"
+	"github.com/aellwein/slf4go"
 	"time"
 )
 
@@ -43,8 +43,8 @@ func CopyFrom(src Parameters) *Parameters {
 }
 
 func ValidateParameters(params *Parameters) {
-	logger := logging.LoggerFactory.GetLogger("transmission")
-	logger.DebugF("parameters: %v", params)
+	logger := slf4go.GetLogger("transmission")
+	logger.Debugf("parameters: %v", params)
 }
 
 func (p *Parameters) String() string {

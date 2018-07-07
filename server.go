@@ -3,10 +3,10 @@ package coap
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/aellwein/coap/logging"
 	"github.com/aellwein/coap/message"
 	"github.com/aellwein/coap/transmission"
 	"github.com/aellwein/slf4go"
+	_ "github.com/aellwein/slf4go-zap-adaptor"
 	"net"
 	"strings"
 )
@@ -38,7 +38,7 @@ func newServer(port CoapPort, parameters *transmission.Parameters, handlers ...R
 	var err error
 	server := &Server{}
 
-	logger = logging.LoggerFactory.GetLogger("server")
+	logger = slf4go.GetLogger("server")
 	server.addr, err = net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", port))
 
 	if err != nil {
@@ -104,12 +104,12 @@ func (server *Server) ListenOn(port CoapPort) error {
 		if err != nil {
 			logger.Debug(err)
 		}
-		logger.DebugF("received packet from %s: \n%s", peer, hex.Dump(buffer[0:n]))
+		logger.Debugf("received packet from %s: \n%s", peer, hex.Dump(buffer[0:n]))
 		msg, err := message.Decode(buffer[0:n], peer)
 		if err != nil {
-			logger.DebugF("error decoding message: %v", err)
+			logger.Debugf("error decoding message: %v", err)
 		}
-		logger.DebugF("message received: %v", msg)
+		logger.Debugf("message received: %v", msg)
 		logger.Debug("Go representation of the packet: ", dumpEncoded(buffer[0:n]))
 	}
 }
