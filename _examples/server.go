@@ -13,12 +13,11 @@ func onPOST(request coap.Request) error {
 }
 
 func main() {
+	slf4go.GetLoggerFactory().SetDefaultLogLevel(slf4go.LevelDebug)
 	slf4go.GetLoggerFactory().SetLoggingParameters(slf4go.LoggingParameters{
 		"development": true,
 	})
-
 	logger := slf4go.GetLogger("server")
-	logger.SetLevel(slf4go.LevelTrace)
 
 	server, err := coap.NewInsecureCoapServerWithDefaultParameters(coap.RequestHandler{Path: "/rd", HandlePOST: onPOST})
 	if err != nil {
