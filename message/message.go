@@ -14,9 +14,9 @@ const MessageVersion byte = 0x01
 // The CoAP message.
 type Message struct {
 	Type      MessageType
-	Code      CodeType
+	Code      *CodeType
 	MessageID MessageIdType
-	Token     TokenType
+	Token     *TokenType
 	Source    *net.UDPAddr
 	Options   *OptionsType
 	Payload   PayloadType
@@ -62,7 +62,7 @@ func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 
 	var tkn TokenType
 	if tokenLength != 0 {
-		tkn = make([]byte, tokenLength)
+		tkn = TokenType(make([]byte, tokenLength))
 		copy(tkn, buffer[4:4+tokenLength])
 	} else {
 		tkn = []byte{}
@@ -88,12 +88,12 @@ func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 
 	msg := &Message{
 		Type: MessageType(mType),
-		Code: CodeType{
+		Code: &CodeType{
 			CodeClass:  CodeClassType(codeClass),
 			CodeDetail: CodeDetailType(codeDetail),
 		},
 		MessageID: MessageIdType(messageId),
-		Token:     tkn,
+		Token:     &tkn,
 		Source:    peer,
 		Options:   &opts,
 		Payload:   payload,
@@ -106,13 +106,13 @@ func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 func (m *Message) Encode() []byte {
 	var pkt bytes.Buffer
 
-	pkt.WriteByte(byte(64 + byte(m.Type<<4) + byte(len(m.Token))))
+	pkt.WriteByte(byte(64 + byte(m.Type<<4) + byte(len(*m.Token))))
 	pkt.WriteByte(byte(m.Code.CodeClass<<5) + byte(m.Code.CodeDetail))
 
 	msgId := make([]byte, 2)
 	binary.BigEndian.PutUint16(msgId, uint16(m.MessageID))
 	pkt.Write(msgId)
-	pkt.Write(m.Token)
+	pkt.Write(*m.Token)
 
 	pkt.Write(encodeOptions(m.Options))
 
@@ -147,4 +147,31 @@ func HexContent(p []byte) string {
 	}
 	b.WriteString("]")
 	return b.String()
+}
+
+func newMessageOfType(t MessageType, code *CodeType) *Message {
+	return &Message{
+		Type:      t,
+		Code:      code,
+		MessageID: NewMessageId(),
+		Token:     NewToken(),
+		Source:    nil,
+		Options:   &EmptyOptions,
+	}
+}
+
+func NewConfirmableMessage(code *CodeType) *Message {
+	return newMessageOfType(Confirmable, code)
+}
+
+func NewAcknowledgementMessage(code *CodeType) *Message {
+	return newMessageOfType(Acknowledgement, code)
+}
+
+func NewNonConfirmableMessage(code *CodeType) *Message {
+	return newMessageOfType(NonConfirmable, code)
+}
+
+func NewResetMessage(code *CodeType) *Message {
+	return newMessageOfType(Reset, code)
 }
