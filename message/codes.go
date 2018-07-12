@@ -1,6 +1,9 @@
 package message
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/aellwein/slf4go"
+)
 
 type CodeClassType uint8
 type CodeDetailType uint8
@@ -58,3 +61,57 @@ var (
 	GatewayTimeout       = ResponseCode{CodeClass: 5, CodeDetail: 4}
 	ProxyingNotSupported = ResponseCode{CodeClass: 5, CodeDetail: 5}
 )
+
+func (r ResponseCode) ToCodeType() CodeType {
+	return CodeType(r)
+}
+
+func (r ResponseCode) String() string {
+	switch r {
+	case Created:
+		return "Created"
+	case Deleted:
+		return "Deleted"
+	case Valid:
+		return "Valid"
+	case Changed:
+		return "Changed"
+	case Content:
+		return "Content"
+	case BadRequest:
+		return "BadRequest"
+	case Unauthorized:
+		return "Unauthorized"
+	case BadOption:
+		return "BadOption"
+	case Forbidden:
+		return "Forbidden"
+	case NotFound:
+		return "NotFound"
+	case MethodNotAllowed:
+		return "MethodNotAllowed"
+	case NotAcceptable:
+		return "NotAcceptable"
+	case PreconditionFailed:
+		return "PreconditionFailed"
+	case RequestEntityTooLarge:
+		return "RequestEntityTooLarge"
+	case UnsupportedContentFormat:
+		return "UnsupportedContentFormat"
+	case InternalServerError:
+		return "InternalServerError"
+	case NotImplemented:
+		return "NotImplemented"
+	case BadGateway:
+		return "BadGateway"
+	case ServiceUnavailable:
+		return "ServiceUnavailable"
+	case GatewayTimeout:
+		return "GatewayTimeout"
+	case ProxyingNotSupported:
+		return "ProxyingNotSupported"
+	default:
+		slf4go.GetLogger("codes").Panicf("unsupported response code: %d", r)
+		return ""
+	}
+}
