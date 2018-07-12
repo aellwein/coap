@@ -15,6 +15,8 @@ type OptionValueType []byte
 // OptionNumber : [ OptionValue1, OptionValue2, ...OptionValueN ]
 type OptionsType map[OptionNumberType][]OptionValueType
 
+var EmptyOptions = make(OptionsType)
+
 // decode option from message buffer and return the next position in the buffer
 func decodeOptions(options *OptionsType, buffer []byte) (int, error) {
 	var (
