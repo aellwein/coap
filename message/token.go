@@ -2,7 +2,9 @@ package message
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
+	"math/rand"
 )
 
 // Token, max 8 bytes.
@@ -15,4 +17,16 @@ func (t TokenType) String() string {
 		b.WriteString(fmt.Sprintf("%02X", i))
 	}
 	return b.String()
+}
+
+func NewToken() *TokenType {
+	t := TokenType(make([]byte, 8))
+	binary.BigEndian.PutUint64(t, rand.Uint64())
+	return &t
+}
+
+func (t *TokenType) Copy() *TokenType {
+	to := make([]byte, 8)
+	copy(to, *t)
+	return t
 }
