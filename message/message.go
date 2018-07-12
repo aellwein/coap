@@ -103,7 +103,7 @@ func Decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 }
 
 // Encode the message to a byte array.
-func (m Message) Encode() []byte {
+func (m *Message) Encode() []byte {
 	var pkt bytes.Buffer
 
 	pkt.WriteByte(byte(64 + byte(m.Type<<4) + byte(len(m.Token))))
