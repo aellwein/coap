@@ -114,6 +114,8 @@ func (server *Server) ListenOn(port CoapPort) error {
 	}
 }
 
+//func (server *Server) Respond()
+
 func dumpEncoded(b []byte) string {
 	var builder strings.Builder
 	builder.WriteString("[]byte{\n")
