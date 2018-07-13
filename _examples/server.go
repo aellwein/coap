@@ -1,16 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/aellwein/coap"
 	"github.com/aellwein/slf4go"
 	_ "github.com/aellwein/slf4go-zap-adaptor"
 )
-
-func onPOST(request coap.Request) error {
-	fmt.Println(request)
-	return nil
-}
 
 func main() {
 	slf4go.GetLoggerFactory().SetDefaultLogLevel(slf4go.LevelDebug)
@@ -19,7 +13,7 @@ func main() {
 	})
 	logger := slf4go.GetLogger("server")
 
-	server, err := coap.NewInsecureCoapServerWithDefaultParameters(coap.RequestHandler{Path: "/rd", HandlePOST: onPOST})
+	server, err := coap.NewInsecureCoapServerWithDefaultParameters(coap.NewResource("/rd"))
 	if err != nil {
 		logger.Panic(err)
 	}

@@ -23,7 +23,7 @@ type Server struct {
 	addr       *net.UDPAddr
 	conn       *net.UDPConn
 	parameters *transmission.Parameters
-	resources  map[string]Resource
+	resources  map[string]*Resource
 }
 
 var logger slf4go.Logger
@@ -34,7 +34,7 @@ func (server Server) String() string {
 		server.addr, server.parameters, server.conn, server.resources)
 }
 
-func newServer(port CoapPort, parameters *transmission.Parameters, resources ...Resource) (*Server, error) {
+func newServer(port CoapPort, parameters *transmission.Parameters, resources ...*Resource) (*Server, error) {
 	var err error
 	server := &Server{}
 
@@ -48,7 +48,7 @@ func newServer(port CoapPort, parameters *transmission.Parameters, resources ...
 	transmission.ValidateParameters(parameters)
 
 	server.parameters = parameters
-	server.resources = make(map[string]Resource)
+	server.resources = make(map[string]*Resource)
 
 	for _, r := range resources {
 		if r.Path != "" {
@@ -60,23 +60,23 @@ func newServer(port CoapPort, parameters *transmission.Parameters, resources ...
 }
 
 // Creates a default CoAP Server on secure port using default transmission parameters.
-func NewSecureCoapServerWithDefaultParameters(resources ...Resource) (*Server, error) {
+func NewSecureCoapServerWithDefaultParameters(resources ...*Resource) (*Server, error) {
 	return newServer(SecurePort, transmission.NewDefaultParameters(), resources...)
 }
 
 // Creates a default CoAP server on insecure port using default transmission parameters.
-func NewInsecureCoapServerWithDefaultParameters(resources ...Resource) (*Server, error) {
+func NewInsecureCoapServerWithDefaultParameters(resources ...*Resource) (*Server, error) {
 	return newServer(InsecurePort, transmission.NewDefaultParameters(), resources...)
 }
 
 // Creates a new CoAP server on secure port using given transmission parameters.
-func NewSecureCoapServer(parameters *transmission.Parameters, resources ...Resource) (*Server, error) {
+func NewSecureCoapServer(parameters *transmission.Parameters, resources ...*Resource) (*Server, error) {
 	params := transmission.CopyFrom(*parameters)
 	return newServer(SecurePort, params, resources...)
 }
 
 // Creates a default CoAP server on insecure port using given transmission parameters.
-func NewInsecureCoapServer(parameters *transmission.Parameters, resources ...Resource) (*Server, error) {
+func NewInsecureCoapServer(parameters *transmission.Parameters, resources ...*Resource) (*Server, error) {
 	params := transmission.CopyFrom(*parameters)
 	return newServer(InsecurePort, params, resources...)
 }
