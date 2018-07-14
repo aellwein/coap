@@ -24,8 +24,8 @@ func (r *responseAdapter) GetResp() *message.Message {
 }
 
 func newResponseAdapter(code *message.ResponseCode, request *Request) Response {
-	c := (*code).ToCodeType()
-	msg := message.NewAcknowledgementMessage(&c)
+	c := code.ToCodeType()
+	msg := message.NewAcknowledgementMessage(c)
 	msg.Token = (*request).GetReq().Token // important to use the token from request
 	return &responseAdapter{resp: msg}
 }
@@ -33,78 +33,78 @@ func newResponseAdapter(code *message.ResponseCode, request *Request) Response {
 /* Success responses */
 
 func NewOkResponse(request *Request) Response {
-	return newResponseAdapter(&message.Ok, request)
+	return newResponseAdapter(message.Ok, request)
 }
 
 func NewCreatedResponse(request *Request) Response {
-	return newResponseAdapter(&message.Created, request)
+	return newResponseAdapter(message.Created, request)
 }
 func NewDeletedResponse(request *Request) Response {
-	return newResponseAdapter(&message.Deleted, request)
+	return newResponseAdapter(message.Deleted, request)
 }
 func NewValidResponse(request *Request) Response {
-	return newResponseAdapter(&message.Valid, request)
+	return newResponseAdapter(message.Valid, request)
 }
 func NewChangedResponse(request *Request) Response {
-	return newResponseAdapter(&message.Changed, request)
+	return newResponseAdapter(message.Changed, request)
 }
 func NewContentResponse(request *Request) Response {
-	return newResponseAdapter(&message.Content, request)
+	return newResponseAdapter(message.Content, request)
 }
 
 /* Client error responses */
 
 func NewBadRequestResponse(request *Request) Response {
-	return newResponseAdapter(&message.BadRequest, request)
+	return newResponseAdapter(message.BadRequest, request)
 }
 
 func NewUnauthorizedResponse(request *Request) Response {
-	return newResponseAdapter(&message.Unauthorized, request)
+	return newResponseAdapter(message.Unauthorized, request)
 }
 func NewBadOptionResponse(request *Request) Response {
-	return newResponseAdapter(&message.BadOption, request)
+	return newResponseAdapter(message.BadOption, request)
 }
 
 func NewForbiddenResponse(request *Request) Response {
-	return newResponseAdapter(&message.Forbidden, request)
+	return newResponseAdapter(message.Forbidden, request)
 }
 func NewNotFoundResponse(request *Request) Response {
-	return newResponseAdapter(&message.NotFound, request)
+	return newResponseAdapter(message.NotFound, request)
 }
 func NewMethodNotAllowedResponse(request *Request) Response {
-	return newResponseAdapter(&message.MethodNotAllowed, request)
+	return newResponseAdapter(message.MethodNotAllowed, request)
 }
 func NewNotAcceptableResponse(request *Request) Response {
-	return newResponseAdapter(&message.NotAcceptable, request)
+	return newResponseAdapter(message.NotAcceptable, request)
 }
 func NewPreconditionFailedResponse(request *Request) Response {
-	return newResponseAdapter(&message.PreconditionFailed, request)
+	return newResponseAdapter(message.PreconditionFailed, request)
 }
 func NewRequestEntityTooLargeResponse(request *Request) Response {
-	return newResponseAdapter(&message.RequestEntityTooLarge, request)
+	return newResponseAdapter(message.RequestEntityTooLarge, request)
 }
 func NewUnsupportedContentFormatResponse(request *Request) Response {
-	return newResponseAdapter(&message.UnsupportedContentFormat, request)
+	return newResponseAdapter(message.UnsupportedContentFormat, request)
 }
 
 /* server error codes */
 
 func NewInternalServerErrorResponse(request *Request) Response {
-	return newResponseAdapter(&message.InternalServerError, request)
+	return newResponseAdapter(message.InternalServerError, request)
 }
 
 func NewNotImplementedResponse(request *Request) Response {
-	return newResponseAdapter(&message.NotImplemented, request)
+	return newResponseAdapter(message.NotImplemented, request)
 }
 func NewBadGatewayResponse(request *Request) Response {
-	return newResponseAdapter(&message.BadGateway, request)
+	return newResponseAdapter(message.BadGateway, request)
 }
 func NewServiceUnavailableResponse(request *Request) Response {
-	return newResponseAdapter(&message.ServiceUnavailable, request)
+	return newResponseAdapter(message.ServiceUnavailable, request)
 }
 func NewGatewayTimeoutResponse(request *Request) Response {
-	return newResponseAdapter(&message.GatewayTimeout, request)
+	return newResponseAdapter(message.GatewayTimeout, request)
 }
 func NewProxyingNotSupportedResponse(request *Request) Response {
-	return newResponseAdapter(&message.ProxyingNotSupported, request)
+	return newResponseAdapter(message.ProxyingNotSupported, request)
 }

@@ -27,7 +27,7 @@ func newMockRequest() Request {
 }
 
 type responses struct {
-	code               message.ResponseCode
+	code               *message.ResponseCode
 	responseCreateFunc func(r *Request) Response
 }
 
@@ -132,7 +132,7 @@ func TestNewResponse_Auto(t *testing.T) {
 				fmt.Printf("\n\t\t%v", resp)
 
 				convey.Convey("Then response code matches the set up code", func() {
-					convey.So(*resp.GetResp().Code, convey.ShouldResemble, r.code.ToCodeType())
+					convey.So(resp.GetResp().Code, convey.ShouldResemble, r.code.ToCodeType())
 
 					convey.Convey("And token must be equal the request token", func() {
 
