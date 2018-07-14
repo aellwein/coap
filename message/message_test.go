@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fmt"
 	"github.com/aellwein/coap/util"
 	c "github.com/smartystreets/goconvey/convey"
 	"strings"
@@ -549,6 +550,62 @@ func TestEncodeDecodedMessageWithExtraLongOptionsGivesTheSameByteContent2(t *tes
 				c.Convey("The byte content should be the same", func() {
 					c.So(b2, c.ShouldResemble, b)
 				})
+			})
+		})
+	})
+}
+
+func TestNewConfirmableMessage(t *testing.T) {
+	c.Convey("Given a new confirmable message", t, func() {
+		m := NewConfirmableMessage(GET.ToCodeType())
+		c.Convey("When message is inspected", func() {
+			c.Convey(fmt.Sprintf("Then the type is '%v'", Confirmable), func() {
+				c.So(m.Type, c.ShouldEqual, Confirmable)
+			})
+			c.Convey("And message code is GET", func() {
+				c.So(m.Code, c.ShouldEqual, GET.ToCodeType())
+			})
+		})
+	})
+}
+
+func TestNewNonConfirmableMessage(t *testing.T) {
+	c.Convey("Given a new non-confirmable message", t, func() {
+		m := NewNonConfirmableMessage(GET.ToCodeType())
+		c.Convey("When message is inspected", func() {
+			c.Convey(fmt.Sprintf("Then the type is '%v'", NonConfirmable), func() {
+				c.So(m.Type, c.ShouldEqual, NonConfirmable)
+			})
+			c.Convey("And message code is GET", func() {
+				c.So(m.Code, c.ShouldEqual, GET.ToCodeType())
+			})
+		})
+	})
+}
+
+func TestNewResetMessage(t *testing.T) {
+	c.Convey("Given a new reset message", t, func() {
+		m := NewResetMessage(GET.ToCodeType())
+		c.Convey("When message is inspected", func() {
+			c.Convey(fmt.Sprintf("Then the type is '%v'", Reset), func() {
+				c.So(m.Type, c.ShouldEqual, Reset)
+			})
+			c.Convey("And message code is GET", func() {
+				c.So(m.Code, c.ShouldEqual, GET.ToCodeType())
+			})
+		})
+	})
+}
+
+func TestNewAcknowledgementMessage(t *testing.T) {
+	c.Convey("Given a new acknowledgement message", t, func() {
+		m := NewAcknowledgementMessage(GET.ToCodeType())
+		c.Convey("When message is inspected", func() {
+			c.Convey(fmt.Sprintf("Then the type is '%v'", Acknowledgement), func() {
+				c.So(m.Type, c.ShouldEqual, Acknowledgement)
+			})
+			c.Convey("And message code is GET", func() {
+				c.So(m.Code, c.ShouldEqual, GET.ToCodeType())
 			})
 		})
 	})
