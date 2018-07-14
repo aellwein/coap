@@ -35,6 +35,7 @@ var (
 
 var (
 	// success codes
+	Ok      = ResponseCode{CodeClass: 2, CodeDetail: 0}
 	Created = ResponseCode{CodeClass: 2, CodeDetail: 1}
 	Deleted = ResponseCode{CodeClass: 2, CodeDetail: 2}
 	Valid   = ResponseCode{CodeClass: 2, CodeDetail: 3}
@@ -66,8 +67,14 @@ func (r ResponseCode) ToCodeType() CodeType {
 	return CodeType(r)
 }
 
+func (c CodeType) ToResponseCode() ResponseCode {
+	return ResponseCode(c)
+}
+
 func (r ResponseCode) String() string {
 	switch r {
+	case Ok:
+		return "Ok"
 	case Created:
 		return "Created"
 	case Deleted:

@@ -33,6 +33,10 @@ type responses struct {
 
 var allResponses = []responses{
 	{
+		code:               message.Ok,
+		responseCreateFunc: NewOkResponse,
+	},
+	{
 		code:               message.Created,
 		responseCreateFunc: NewCreatedResponse,
 	},
@@ -125,6 +129,7 @@ func TestNewResponse_Auto(t *testing.T) {
 		for _, r := range allResponses {
 			convey.Convey(fmt.Sprintf("When response '%v' is created", r.code), func() {
 				resp := r.responseCreateFunc(&mr)
+				fmt.Printf("\n\t\t%v", resp)
 
 				convey.Convey("Then response code matches the set up code", func() {
 					convey.So(*resp.GetResp().Code, convey.ShouldResemble, r.code.ToCodeType())

@@ -16,7 +16,7 @@ type responseAdapter struct {
 }
 
 func (r *responseAdapter) String() string {
-	return fmt.Sprintf("Response{ code: %v }", r.resp.Code)
+	return fmt.Sprintf("Response{ code: %v (%v) }", r.resp.Code, r.resp.Code.ToResponseCode())
 }
 
 func (r *responseAdapter) GetResp() *message.Message {
@@ -31,6 +31,10 @@ func newResponseAdapter(code *message.ResponseCode, request *Request) Response {
 }
 
 /* Success responses */
+
+func NewOkResponse(request *Request) Response {
+	return newResponseAdapter(&message.Ok, request)
+}
 
 func NewCreatedResponse(request *Request) Response {
 	return newResponseAdapter(&message.Created, request)
