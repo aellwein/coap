@@ -1,4 +1,4 @@
-package util
+package coap
 
 import (
 	"encoding/binary"
