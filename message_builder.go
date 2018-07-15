@@ -21,9 +21,6 @@ type messageTokenBuilder struct {
 	msgCtx *messageContext
 }
 
-type messageOptionBuilder struct {
-	msgCtx *messageContext
-}
 type messagePayloadBuilder struct {
 	msgCtx *messageContext
 }
@@ -95,43 +92,10 @@ func (m messageIdBuilder) WithRandomToken() messageTokenBuilder {
 }
 
 func (m messageTokenBuilder) Build() *Message {
-	opts := make(OptionsType)
-	return &Message{
-		Type:      m.msgCtx.mType,
-		Code:      m.msgCtx.code,
-		MessageID: m.msgCtx.messageId,
-		Token:     m.msgCtx.token,
-		Source:    m.msgCtx.source,
-		Options:   &opts,
-	}
-}
-
-// Option builder method adds an option (code), with one or many values given.
-func (m messageTokenBuilder) Option(opt OptionNumberType, valueTypes ...OptionValueType) messageOptionBuilder {
 	if m.msgCtx.options == nil {
 		opts := make(OptionsType)
 		m.msgCtx.options = &opts
-		(*m.msgCtx.options)[opt] = valueTypes
-	} else {
-		(*m.msgCtx.options)[opt] = append((*m.msgCtx.options)[opt], valueTypes...)
 	}
-	return messageOptionBuilder{m.msgCtx}
-}
-
-// Option builder method adds an option (code), with one or many values given.
-func (m messageOptionBuilder) Option(opt OptionNumberType, valueTypes ...OptionValueType) messageOptionBuilder {
-	if m.msgCtx.options == nil {
-		opts := make(OptionsType)
-		m.msgCtx.options = &opts
-		(*m.msgCtx.options)[opt] = valueTypes
-	} else {
-		(*m.msgCtx.options)[opt] = append((*m.msgCtx.options)[opt], valueTypes...)
-	}
-	return messageOptionBuilder{m.msgCtx}
-}
-
-// Build constructs a new message.
-func (m messageOptionBuilder) Build() *Message {
 	return &Message{
 		Type:      m.msgCtx.mType,
 		Code:      m.msgCtx.code,
@@ -142,12 +106,20 @@ func (m messageOptionBuilder) Build() *Message {
 	}
 }
 
-// WithPayload provides a payload of given type to the message builder.
-func (m messageOptionBuilder) WithPayload(cType ContentType, payload PayloadType) messagePayloadBuilder {
+// Option builder method adds an option (code), with one or many values given.
+func (m messageTokenBuilder) Option(opt OptionNumberType, valueTypes ...OptionValueType) messageTokenBuilder {
 	if m.msgCtx.options == nil {
 		opts := make(OptionsType)
 		m.msgCtx.options = &opts
+		(*m.msgCtx.options)[opt] = valueTypes
+	} else {
+		(*m.msgCtx.options)[opt] = append((*m.msgCtx.options)[opt], valueTypes...)
 	}
+	return m
+}
+
+// WithPayload provides a payload of given type to the message builder.
+func (m messageTokenBuilder) WithPayload(cType ContentType, payload PayloadType) messagePayloadBuilder {
 	if cType < 256 {
 		(*m.msgCtx.options)[ContentFormat] = []OptionValueType{[]byte{byte(cType)}}
 	} else {
