@@ -15,6 +15,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/bouk/monkey"
+  packages = ["."]
+  revision = "5df1f207ff77e025801505ae4d903133a0b4353f"
+
+[[projects]]
+  branch = "master"
   name = "github.com/gopherjs/gopherjs"
   packages = ["js"]
   revision = "0892b62f0d9fb5857760c3cfca837207185117ee"
@@ -73,6 +79,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1fde11b3f48f6f911ae50c86aa2349e6d1b686804a7216bcbc1ee79b35748c6a"
+  inputs-digest = "eadfb911d4ef49ef70866cbabc49648fd54beaac8939d48e12a03317a37f3176"
   solver-name = "gps-cdcl"
   solver-version = 1
