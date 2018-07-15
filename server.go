@@ -101,11 +101,14 @@ func (server *Server) ListenOn(port CoapPort) error {
 		n, peer, err := server.conn.ReadFromUDP(buffer)
 		if err != nil {
 			logger.Debug(err)
+			// try to read again if read failed
+			continue
 		}
 		logger.Debugf("received packet from %s: \n%s", peer, hex.Dump(buffer[0:n]))
 		msg, err := NewMessageFromBytesAndPeer(buffer[0:n], peer)
 		if err != nil {
 			logger.Debugf("error decoding message: %v", err)
+			// message could not be decoded, ignore
 			continue
 		}
 		logger.Debugf("message received: %v", msg)
