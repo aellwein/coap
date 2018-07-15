@@ -1,10 +1,10 @@
 package coap
 
 import (
+	"fmt"
 	c "github.com/smartystreets/goconvey/convey"
 	"strings"
 	"testing"
-	"fmt"
 )
 
 func TestTooShortMessage(t *testing.T) {

@@ -85,7 +85,6 @@ func (mt MessageType) String() string {
 	}
 }
 
-
 /* TOKEN */
 
 // Token, max 8 bytes.
@@ -229,5 +228,3 @@ func (m *Message) String() string {
 		m.Payload,
 		m.Source)
 }
-
-

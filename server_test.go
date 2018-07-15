@@ -1,11 +1,11 @@
 package coap
 
 import (
-	c "github.com/smartystreets/goconvey/convey"
-	"testing"
-	"github.com/bouk/monkey"
-	"net"
 	"errors"
+	"github.com/bouk/monkey"
+	c "github.com/smartystreets/goconvey/convey"
+	"net"
+	"testing"
 )
 
 func TestNewInsecureCoapServer(t *testing.T) {
