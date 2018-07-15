@@ -121,7 +121,6 @@ func (server *Server) ListenOn(port CoapPort) error {
 			server.conn.WriteToUDP(respBuf, peer)
 		}
 	}
-	return nil
 }
 
 func (server *Server) routeRequest(msg *Message) *Message {
