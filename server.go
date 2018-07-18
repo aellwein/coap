@@ -1,11 +1,12 @@
 package coap
 
 import (
-	"encoding/hex"
 	"fmt"
 	"github.com/aellwein/slf4go"
 	_ "github.com/aellwein/slf4go-zap-adaptor"
 	"net"
+	"errors"
+	"encoding/hex"
 )
 
 type CoapPort uint16
@@ -48,9 +49,10 @@ func newServer(port CoapPort, parameters TransmissionParameters, resources ...*R
 	server.resources = make(map[string]*Resource)
 
 	for _, r := range resources {
-		if r.Path != "" {
-			server.resources[r.Path] = r
+		if r.Path == "" || r.Path[0:1] != "/" {
+			return nil, errors.New("path may not be empty and must start with slash")
 		}
+		server.resources[r.Path] = r
 	}
 
 	return server, nil
@@ -83,6 +85,29 @@ func (server *Server) Listen() error {
 	return server.ListenOn(InsecurePort)
 }
 
+func (s *Server) handlePacket(packet []byte, n int, peer *net.UDPAddr) {
+	logger.Debugf("received packet from %s: \n%s", peer, hex.Dump(packet[0:n]))
+	msg, err := NewMessageFromBytesAndPeer(packet[0:n], peer)
+	if err != nil {
+		logger.Debugf("error decoding message: %v", err)
+		// message could not be decoded, ignore
+		return
+	}
+	logger.Debugf("message received: %v", msg)
+	logger.Debug("Go representation of the packet: ", DumpInGoFormat(packet[0:n]))
+
+	if msg.Type == NonConfirmable || msg.Type == Confirmable {
+		// route request and get response
+		resp := s.routeRequest(msg)
+
+		logger.Debugf("will send message %v", resp)
+		// write response
+		respBuf := resp.ToBytes()
+		s.conn.WriteToUDP(respBuf, peer)
+	}
+
+}
+
 // Listen on specific port
 func (server *Server) ListenOn(port CoapPort) error {
 	var err error
@@ -104,25 +129,8 @@ func (server *Server) ListenOn(port CoapPort) error {
 			// try to read again if read failed
 			continue
 		}
-		logger.Debugf("received packet from %s: \n%s", peer, hex.Dump(buffer[0:n]))
-		msg, err := NewMessageFromBytesAndPeer(buffer[0:n], peer)
-		if err != nil {
-			logger.Debugf("error decoding message: %v", err)
-			// message could not be decoded, ignore
-			continue
-		}
-		logger.Debugf("message received: %v", msg)
-		logger.Debug("Go representation of the packet: ", DumpInGoFormat(buffer[0:n]))
 
-		if msg.Type == NonConfirmable || msg.Type == Confirmable {
-			// route request and get response
-			resp := server.routeRequest(msg)
-
-			logger.Debugf("will send message %v", resp)
-			// write response
-			respBuf := resp.ToBytes()
-			server.conn.WriteToUDP(respBuf, peer)
-		}
+		server.handlePacket(buffer, n, peer)
 	}
 }
 

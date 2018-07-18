@@ -96,6 +96,32 @@ func TestNewInecureCoapServerWithDefaultParameters(t *testing.T) {
 	})
 }
 
+func TestNewInecureCoapServerWithEmptyResourcePath(t *testing.T) {
+	c.Convey("Given a new insecure coap server", t, func() {
+		c.Convey("When the resource path is empty", func() {
+			res := &Resource{Path: ""}
+			_, err := NewInsecureCoapServerWithDefaultParameters(res)
+
+			c.Convey("Then an error is returned", func() {
+				c.So(err, c.ShouldNotBeNil)
+			})
+		})
+	})
+}
+
+func TestNewInecureCoapServerWithResourcePathNotStartingWithSlash(t *testing.T) {
+	c.Convey("Given a new insecure coap server", t, func() {
+		c.Convey("When the resource path is empty", func() {
+			res := &Resource{Path: "rd"}
+			_, err := NewInsecureCoapServerWithDefaultParameters(res)
+
+			c.Convey("Then an error is returned", func() {
+				c.So(err, c.ShouldNotBeNil)
+			})
+		})
+	})
+}
+
 func TestServer_Listen(t *testing.T) {
 	c.Convey("Given a new coap server", t, func() {
 		server, _ := NewInsecureCoapServerWithDefaultParameters(&Resource{Path: "/rd"})
