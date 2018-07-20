@@ -1,12 +1,12 @@
 package coap
 
 import (
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/aellwein/slf4go"
 	_ "github.com/aellwein/slf4go-zap-adaptor"
 	"net"
-	"errors"
-	"encoding/hex"
 )
 
 type CoapPort uint16
