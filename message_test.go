@@ -146,7 +146,8 @@ func TestOptionsAreParsedCorrectly(t *testing.T) {
 			c.Convey("And message should have Uri-Port to be set to 5683", func() {
 				v, ok := (*m.Options)[UriPort]
 				c.So(ok, c.ShouldBeTrue)
-				c.So(ToBigEndianNumber(v[0]).(uint16), c.ShouldEqual, 5683)
+				up, _ := ToBigEndianNumber(v[0])
+				c.So(up.(uint16), c.ShouldEqual, 5683)
 			})
 			c.Convey("And 3rd Uri-Query parameter should be equal a set string", func() {
 				expected := strings.Join(
@@ -267,7 +268,7 @@ func TestParseMessagePayload(t *testing.T) {
 		c.Convey("When message is decoded", func() {
 			m, _ := NewMessageFromBytes(b)
 			c.Convey("Payload is as expected", func() {
-				c.So(string(m.Payload), c.ShouldEqual, "alex123")
+				c.So(string(m.Payload.Content), c.ShouldEqual, "alex123")
 			})
 		})
 	})

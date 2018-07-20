@@ -199,9 +199,10 @@ func (opt *OptionsType) String() string {
 				b.WriteString("\",")
 
 			case Uint:
-				n := ToBigEndianNumber(i)
-				b.WriteString(fmt.Sprintf("%d", n))
-				b.WriteString(",")
+				if n, err := ToBigEndianNumber(i); err == nil {
+					b.WriteString(fmt.Sprintf("%d", n))
+					b.WriteString(",")
+				}
 			}
 		}
 		b.WriteString("] ")
