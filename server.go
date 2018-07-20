@@ -182,6 +182,8 @@ func (server *Server) routeRequest(msg *Message) *Message {
 					} else {
 						return resp
 					}
+				} else {
+					return NewMethodNotAllowedResponseMessage(msg)
 				}
 
 			case *POST:

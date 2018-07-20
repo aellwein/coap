@@ -2,6 +2,7 @@ package coap
 
 import (
 	"errors"
+	"fmt"
 	"github.com/bouk/monkey"
 	c "github.com/smartystreets/goconvey/convey"
 	"net"
@@ -159,6 +160,162 @@ func TestServer_ListenWithError(t *testing.T) {
 
 			c.Convey("Then the error from underlying interface is passed to user", func() {
 				c.So(err2, c.ShouldEqual, err)
+			})
+		})
+	})
+}
+
+type routingTestCase struct {
+	code                 *CodeType
+	resource             *Resource
+	expectedResponseCode *CodeType
+}
+
+var routingTestCases = []routingTestCase{
+	{
+		code:                 POST,
+		resource:             &Resource{Path: "/notExists"},
+		expectedResponseCode: NotFound,
+	},
+	{
+		code:                 POST,
+		resource:             &Resource{Path: "/rd"},
+		expectedResponseCode: MethodNotAllowed,
+	},
+	{
+		code:                 PUT,
+		resource:             &Resource{Path: "/rd"},
+		expectedResponseCode: MethodNotAllowed,
+	},
+	{
+		code:                 GET,
+		resource:             &Resource{Path: "/rd"},
+		expectedResponseCode: MethodNotAllowed,
+	},
+	{
+		code:                 DELETE,
+		resource:             &Resource{Path: "/rd"},
+		expectedResponseCode: MethodNotAllowed,
+	},
+	{
+		code: POST,
+		resource: &Resource{Path: "/rd", OnPOST: func(request *Message) (*Message, error) {
+			return nil, errors.New("provoked")
+		}},
+		expectedResponseCode: InternalServerError,
+	},
+	{
+		code: PUT,
+		resource: &Resource{Path: "/rd", OnPUT: func(request *Message) (*Message, error) {
+			return nil, errors.New("provoked")
+		}},
+		expectedResponseCode: InternalServerError,
+	},
+	{
+		code: GET,
+		resource: &Resource{Path: "/rd", OnGET: func(request *Message) (*Message, error) {
+			return nil, errors.New("provoked")
+		}},
+		expectedResponseCode: InternalServerError,
+	},
+	{
+		code: DELETE,
+		resource: &Resource{Path: "/rd", OnDELETE: func(request *Message) (*Message, error) {
+			return nil, errors.New("provoked")
+		}},
+		expectedResponseCode: InternalServerError,
+	},
+	{
+		code: POST,
+		resource: &Resource{Path: "/rd", OnPOST: func(request *Message) (*Message, error) {
+			return NewContentResponseMessage(request), nil
+		}},
+		expectedResponseCode: Content,
+	},
+	{
+		code: PUT,
+		resource: &Resource{Path: "/rd", OnPUT: func(request *Message) (*Message, error) {
+			return NewContentResponseMessage(request), nil
+		}},
+		expectedResponseCode: Content,
+	},
+	{
+		code: GET,
+		resource: &Resource{Path: "/rd", OnGET: func(request *Message) (*Message, error) {
+			return NewContentResponseMessage(request), nil
+		}},
+		expectedResponseCode: Content,
+	},
+	{
+		code: DELETE,
+		resource: &Resource{Path: "/rd", OnDELETE: func(request *Message) (*Message, error) {
+			return NewContentResponseMessage(request), nil
+		}},
+		expectedResponseCode: Content,
+	},
+}
+
+func TestServer_RouteMessage(t *testing.T) {
+	for _, tc := range routingTestCases {
+		c.Convey(fmt.Sprintf("Given a coap server with resource %v", tc.resource), t, func() {
+
+			server, _ := NewInsecureCoapServerWithDefaultParameters(tc.resource)
+
+			msg := NewConfirmableMessageBuilder().
+				Code(tc.code).
+				WithRandomMessageId().
+				WithRandomToken().
+				Option(UriPath, []byte("rd")).
+				Build()
+
+			c.Convey(fmt.Sprintf("When a %v message is routed", msg.Code), func() {
+				resp := server.routeRequest(msg)
+
+				c.Convey(fmt.Sprintf("Then the response has the code '%v'", tc.expectedResponseCode), func() {
+					c.So(*resp.Code, c.ShouldResemble, *tc.expectedResponseCode)
+				})
+			})
+		})
+	}
+}
+
+func TestServer_RouteMessageWithNoUriPath(t *testing.T) {
+	c.Convey("Given a coap server", t, func() {
+		server, _ := NewInsecureCoapServerWithDefaultParameters(&Resource{Path: "/rd"})
+
+		c.Convey("When a message without uri-path option is routed", func() {
+
+			msg := NewConfirmableMessageBuilder().
+				Code(POST).
+				WithRandomMessageId().
+				WithRandomToken().
+				Build()
+
+			c.Convey("Then a response with BadRequest code is created", func() {
+				resp := server.routeRequest(msg)
+
+				c.So(*resp.Code, c.ShouldResemble, *BadRequest)
+			})
+		})
+	})
+}
+func TestServer_RouteMessageWithInvalidMethodCode(t *testing.T) {
+	c.Convey("Given a coap server", t, func() {
+		server, _ := NewInsecureCoapServerWithDefaultParameters(&Resource{Path: "/rd"})
+
+		c.Convey("When a message with invalid method code is routed", func() {
+
+			msg := NewConfirmableMessageBuilder().
+				Code(EmptyMessage).
+				WithRandomMessageId().
+				WithRandomToken().
+				Option(UriPath, []byte("rd")).
+				Build()
+
+			c.Convey("Then a response with BadRequest code is created", func() {
+				resp := server.routeRequest(msg)
+
+				c.So(*resp.Code, c.ShouldResemble, *BadRequest)
 			})
 		})
 	})
