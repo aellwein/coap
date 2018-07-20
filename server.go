@@ -97,6 +97,13 @@ func (s *Server) handlePacket(packet []byte, n int, peer *net.UDPAddr) {
 	logger.Debug("Go representation of the packet: ", DumpInGoFormat(packet[0:n]))
 
 	if msg.Type == NonConfirmable || msg.Type == Confirmable {
+
+		if res := msg.Validate(); res != Ok {
+			b := responseWithCode(msg, res).ToBytes()
+			s.conn.WriteToUDP(b, peer)
+			return
+		}
+
 		// route request and get response
 		resp := s.routeRequest(msg)
 
