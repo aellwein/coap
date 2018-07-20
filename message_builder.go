@@ -156,33 +156,86 @@ func NewMessageFromBytesAndPeer(buffer []byte, peer *net.UDPAddr) (*Message, err
 	return decode(buffer, peer)
 }
 
-func NewInternalServerErrorResponseMessage(msg *Message) *Message {
-	return NewAcknowledgementMessageBuilder().
-		Code(InternalServerError).
-		MessageId(msg.MessageID).
-		Token(msg.Token).
-		Build()
+func responseWithCode(request *Message, code *CodeType) *Message {
+	return NewAcknowledgementMessageBuilder().Code(code).MessageId(request.MessageID).Token(request.Token).Build()
 }
 
-func NewMethodNotAllowedResponseMessage(msg *Message) *Message {
-	return NewAcknowledgementMessageBuilder().
-		Code(MethodNotAllowed).
-		MessageId(msg.MessageID).
-		Token(msg.Token).
-		Build()
+// Bad Request Response
+func NewBadRequestResponseMessage(request *Message) *Message {
+	return responseWithCode(request, BadRequest)
 }
 
-func NewBadRequestResponseMessage(msg *Message) *Message {
-	return NewAcknowledgementMessageBuilder().
-		Code(BadRequest).
-		MessageId(msg.MessageID).
-		Token(msg.Token).
-		Build()
+// Unauthorized Response
+func NewUnauthorizedResponseMessage(request *Message) *Message {
+	return responseWithCode(request, Unauthorized)
 }
-func NewNotFoundResponseMessage(msg *Message) *Message {
-	return NewAcknowledgementMessageBuilder().
-		Code(NotFound).
-		MessageId(msg.MessageID).
-		Token(msg.Token).
-		Build()
+
+// Bad Option Response
+func NewBadOptionResponseMessage(request *Message) *Message {
+	return responseWithCode(request, BadOption)
+}
+
+// Forbidden Response
+func NewForbiddenResponseMessage(request *Message) *Message {
+	return responseWithCode(request, Forbidden)
+}
+
+// Not Found Response
+func NewNotFoundResponseMessage(request *Message) *Message {
+	return responseWithCode(request, NotFound)
+}
+
+// Method Not Allowed Response
+func NewMethodNotAllowedResponseMessage(request *Message) *Message {
+	return responseWithCode(request, MethodNotAllowed)
+}
+
+// Not Acceptable Response
+func NewNotAcceptableResponseMessage(request *Message) *Message {
+	return responseWithCode(request, NotAcceptable)
+}
+
+// Precondition Failed Response
+func NewPreconditionFailedResponseMessage(request *Message) *Message {
+	return responseWithCode(request, PreconditionFailed)
+}
+
+// Request Entity Too Large Response
+func NewRequestEntityTooLargeResponseMessage(request *Message) *Message {
+	return responseWithCode(request, RequestEntityTooLarge)
+}
+
+// Unsupported Content Format Response
+func NewUnsupportedContentFormatResponseMessage(request *Message) *Message {
+	return responseWithCode(request, UnsupportedContentFormat)
+}
+
+// Internal Server Error Response
+func NewInternalServerErrorResponseMessage(request *Message) *Message {
+	return responseWithCode(request, InternalServerError)
+}
+
+// Not Implemented Response
+func NewNotImplementedResponseMessage(request *Message) *Message {
+	return responseWithCode(request, NotImplemented)
+}
+
+// Bad Gateway Response
+func NewBadGatewayResponseMessage(request *Message) *Message {
+	return responseWithCode(request, BadGateway)
+}
+
+// Service Unavailable Response
+func NewServiceUnavailableResponseMessage(request *Message) *Message {
+	return responseWithCode(request, ServiceUnavailable)
+}
+
+// Gateway Timeout Response
+func NewGatewayTimeoutResponseMessage(request *Message) *Message {
+	return responseWithCode(request, GatewayTimeout)
+}
+
+// Proxying Not Supported Response
+func NewProxyingNotSupportedResponseMessage(request *Message) *Message {
+	return responseWithCode(request, ProxyingNotSupported)
 }
