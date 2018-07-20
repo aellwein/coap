@@ -13,9 +13,6 @@ var (
 
 func init() {
 	slf4go.GetLoggerFactory().SetDefaultLogLevel(slf4go.LevelDebug)
-	slf4go.GetLoggerFactory().SetLoggingParameters(slf4go.LoggingParameters{
-		"development": true,
-	})
 	logger = slf4go.GetLogger("server")
 }
 
@@ -23,10 +20,9 @@ func onRegister(request *coap.Message) (*coap.Message, error) {
 
 	logger.Debugf("onRegister(%v)", request)
 
-
 	server.AddResource(&coap.Resource{
-		Path:   "/rd/cafe/babe",
-		OnPOST: OnUpdate,
+		Path:     "/rd/cafe/babe",
+		OnPOST:   OnUpdate,
 		OnDELETE: OnDelete,
 	})
 

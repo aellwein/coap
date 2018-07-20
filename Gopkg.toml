@@ -30,7 +30,7 @@
   version = "0.4.0"
 
 [[constraint]]
-  name = "github.com/aellwein/slf4go-zap-adaptor"
+  name = "github.com/aellwein/slf4go-logrus-adaptor"
   version = "0.4.0"
 
 [prune]

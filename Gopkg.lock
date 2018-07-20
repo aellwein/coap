@@ -2,15 +2,21 @@
 
 
 [[projects]]
+  name = "github.com/Sirupsen/logrus"
+  packages = ["."]
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
+
+[[projects]]
   name = "github.com/aellwein/slf4go"
   packages = ["."]
   revision = "e01e7c5b3156f862927ac27785b1cce4b9dd4d6d"
   version = "v0.4"
 
 [[projects]]
-  name = "github.com/aellwein/slf4go-zap-adaptor"
+  name = "github.com/aellwein/slf4go-logrus-adaptor"
   packages = ["."]
-  revision = "c05b4a10317af24e8867fd0bc64cbffc2423fb3f"
+  revision = "83b5a253e0c3c3b28eadd0cc7f81208c2a1b534e"
   version = "v0.4"
 
 [[projects]]
@@ -52,33 +58,23 @@
   version = "1.6.3"
 
 [[projects]]
-  name = "go.uber.org/atomic"
-  packages = ["."]
-  revision = "1ea20fb1cbb1cc08cbd0d913a96dead89aa18289"
-  version = "v1.3.2"
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "a2144134853fc9a27a7b1e3eb4f19f1a76df13c9"
 
 [[projects]]
-  name = "go.uber.org/multierr"
-  packages = ["."]
-  revision = "3c4937480c32f4c13a875a1829af76c98ca3d40a"
-  version = "v1.1.0"
-
-[[projects]]
-  name = "go.uber.org/zap"
+  branch = "master"
+  name = "golang.org/x/sys"
   packages = [
-    ".",
-    "buffer",
-    "internal/bufferpool",
-    "internal/color",
-    "internal/exit",
-    "zapcore"
+    "unix",
+    "windows"
   ]
-  revision = "eeedf312bc6c57391d84767a4cd413f02a917974"
-  version = "v1.8.0"
+  revision = "ac767d655b305d4e9612f5f6e33120b9176c4ad4"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "eadfb911d4ef49ef70866cbabc49648fd54beaac8939d48e12a03317a37f3176"
+  inputs-digest = "c5f25c47674eed07ff4e07bda6169490aa43f1994cd697decd51b1ed3ce0d0de"
   solver-name = "gps-cdcl"
   solver-version = 1
