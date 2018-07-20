@@ -40,7 +40,7 @@ func (r resourceMap) String() string {
 	var s bytes.Buffer
 	m := make([]string, 0)
 	for k, v := range r {
-		s.WriteString(fmt.Sprintf("{ '%v': [ ", k))
+		s.WriteString(fmt.Sprintf("{ '%v': [", k))
 		if (*v).OnPOST != nil {
 			m = append(m, "POST")
 		}
@@ -54,7 +54,7 @@ func (r resourceMap) String() string {
 			m = append(m, "DELETE")
 		}
 		s.WriteString(strings.Join(m, ","))
-		s.WriteString(" ]}")
+		s.WriteString("]}")
 	}
 	return s.String()
 }
