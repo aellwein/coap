@@ -23,8 +23,9 @@ TBD
 
 * get the project: ``go get -u github.com/aellwein/coap``
 * get [Dep](https://github.com/golang/dep) tool: ``curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh``
-* ensure that dependencies are installed: ``dep ensure -v``
+* ensure that dependencies are installed: ``make dep`` (or ``make ensure``)
 * get coding!
+* Build and test using ``make``.
 
 
 ## License
