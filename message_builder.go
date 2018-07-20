@@ -163,6 +163,11 @@ func responseWithCode(request *Message, code *CodeType) *Message {
 	return NewAcknowledgementMessageBuilder().Code(code).MessageId(request.MessageID).Token(request.Token).Build()
 }
 
+// Content Response
+func NewContentResponseMessage(request *Message) *Message {
+	return responseWithCode(request, Content)
+}
+
 // Bad Request Response
 func NewBadRequestResponseMessage(request *Message) *Message {
 	return responseWithCode(request, BadRequest)

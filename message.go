@@ -120,10 +120,13 @@ type PayloadType struct {
 func (p PayloadType) String() string {
 	if p.Type != nil {
 		switch *p.Type {
-		case ContentTypeTextPlain:
-		case ContentTypeApplicationJson:
+
+		case ContentTypeTextPlain,
+			ContentTypeApplicationLinkFormat,
+			ContentTypeApplicationXml,
+			ContentTypeApplicationJson:
 			return string(p.Content)
-		case ContentTypeApplicationOctetStream:
+
 		default:
 			return HexContent(p.Content)
 		}
@@ -193,19 +196,25 @@ func decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 		payload.Content = make([]byte, payloadLen-1)
 		copy(payload.Content, buffer[pos+1:])
 
-		if v, ok := opts[ContentFormat]; ok && len(v) > 0 {
-			if be, err := ToBigEndianNumber(v[0]); err == nil {
-				var c ContentType
-				if b, casts := be.(uint8); casts {
-					c = ContentType(b)
-				} else if u, casts := be.(uint16); casts {
-					c = ContentType(u)
-				} else {
-					return nil, errors.New("invalid content format")
-				}
+		if v, ok := opts[ContentFormat]; ok {
+			var c ContentType
+			switch len(v[0]) {
+			case 0:
+				c = 0
 				payload.Type = &c
-			} else {
-				return nil, err
+			default:
+				if be, err := ToBigEndianNumber(v[0]); err == nil {
+					if b, casts := be.(uint8); casts {
+						c = ContentType(b)
+					} else if u, casts := be.(uint16); casts {
+						c = ContentType(u)
+					} else {
+						return nil, errors.New("invalid content format")
+					}
+					payload.Type = &c
+				} else {
+					return nil, err
+				}
 			}
 		}
 		// the case that the content format is not provided
@@ -263,8 +272,8 @@ func (m *Message) String() string {
 
 // Returns true, if message contains an option of given code.
 func (m *Message) HasOption(opt OptionNumberType) bool {
-	o, ok := (*m.Options)[opt]
-	return ok && len(o) > 0
+	_, ok := (*m.Options)[opt]
+	return ok
 }
 
 // Validates the message, returning one of the ok codes, if message is alright,
