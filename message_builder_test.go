@@ -27,7 +27,8 @@ func TestNewConfirmableMessageBuilder(t *testing.T) {
 				c.So(msg.Token, c.ShouldNotResemble, []byte{0, 0, 0, 0, 0, 0, 0, 0})
 				c.So(len(*msg.Options), c.ShouldEqual, 3)
 				c.So((*msg.Options)[UriPath], c.ShouldResemble, []OptionValueType{[]byte("rd")})
-				c.So(msg.Payload, c.ShouldResemble, PayloadType("lalala"))
+				c.So(*msg.Payload.Type, c.ShouldEqual, ContentTypeApplicationJson)
+				c.So(msg.Payload.Content, c.ShouldResemble, []byte("lalala"))
 			})
 		})
 	})
@@ -53,7 +54,8 @@ func TestNewConfirmableMessageBuilderWithCustomPayloadType(t *testing.T) {
 				c.So(len(*msg.Options), c.ShouldEqual, 3)
 				c.So((*msg.Options)[UriPath], c.ShouldResemble, []OptionValueType{[]byte("rd")})
 				c.So(binary.BigEndian.Uint16((*msg.Options)[ContentFormat][0]), c.ShouldEqual, 65000)
-				c.So(msg.Payload, c.ShouldResemble, PayloadType("lalala"))
+				c.So(*msg.Payload.Type, c.ShouldEqual, 65000)
+				c.So(msg.Payload.Content, c.ShouldResemble, []byte("lalala"))
 			})
 		})
 	})
@@ -69,7 +71,7 @@ func TestNewNonConfirmableMessageBuilder(t *testing.T) {
 				WithRandomMessageId().
 				WithRandomToken().
 				Option(UriPath, []byte("rd")).
-				WithPayload(ContentTypeApplicationJson, []byte("lalala")).
+				WithPayload(ContentTypeTextPlain, []byte("lalala")).
 				Build()
 
 			c.Convey("Then all of the fields are set correctly", func() {
@@ -78,7 +80,8 @@ func TestNewNonConfirmableMessageBuilder(t *testing.T) {
 				c.So(msg.Token, c.ShouldNotResemble, []byte{0, 0, 0, 0, 0, 0, 0, 0})
 				c.So(len(*msg.Options), c.ShouldEqual, 2)
 				c.So((*msg.Options)[UriPath], c.ShouldResemble, []OptionValueType{[]byte("rd")})
-				c.So(msg.Payload, c.ShouldResemble, PayloadType("lalala"))
+				c.So(*msg.Payload.Type, c.ShouldEqual, ContentTypeTextPlain)
+				c.So(msg.Payload.Content, c.ShouldResemble, []byte("lalala"))
 				c.So(msg.Source, c.ShouldEqual, addr)
 			})
 		})
@@ -100,7 +103,8 @@ func TestNewAcknowledgementMessageBuilder(t *testing.T) {
 				c.So(msg.MessageID, c.ShouldEqual, 0x1337)
 				c.So(msg.Token, c.ShouldNotResemble, []byte{0xCA, 0xFE, 0xBA, 0xBE, 0xDE, 0xAD, 0xBE, 0xEF})
 				c.So(len(*msg.Options), c.ShouldEqual, 0)
-				c.So(msg.Payload, c.ShouldBeNil)
+				c.So(msg.Payload.Type, c.ShouldBeNil)
+				c.So(msg.Payload.Content, c.ShouldBeNil)
 			})
 		})
 	})
@@ -122,7 +126,8 @@ func TestNewResetMessageBuilder(t *testing.T) {
 				c.So(msg.MessageID, c.ShouldEqual, 0x1337)
 				c.So(msg.Token, c.ShouldNotResemble, []byte{0xCA, 0xFE, 0xBA, 0xBE, 0xDE, 0xAD, 0xBE, 0xEF})
 				c.So(len(*msg.Options), c.ShouldEqual, 1)
-				c.So(msg.Payload, c.ShouldBeNil)
+				c.So(msg.Payload.Type, c.ShouldBeNil)
+				c.So(msg.Payload.Content, c.ShouldBeNil)
 			})
 		})
 	})

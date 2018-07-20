@@ -112,10 +112,23 @@ func (t *TokenType) Copy() *TokenType {
 }
 
 /* PAYLOAD */
-type PayloadType []byte
+type PayloadType struct {
+	Type    *ContentType
+	Content []byte
+}
 
 func (p PayloadType) String() string {
-	return HexContent(p)
+	if p.Type != nil {
+		switch *p.Type {
+		case ContentTypeTextPlain:
+		case ContentTypeApplicationJson:
+			return string(p.Content)
+		case ContentTypeApplicationOctetStream:
+		default:
+			return HexContent(p.Content)
+		}
+	}
+	return HexContent(p.Content)
 }
 
 // Initializes random number generator.
@@ -175,9 +188,28 @@ func decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 	pos += int(tokenLength) + 4
 	payloadLen := len(buffer) - pos
 	var payload PayloadType
+
 	if payloadLen > 0 {
-		payload = make([]byte, payloadLen-1)
-		copy(payload, buffer[pos+1:])
+		payload.Content = make([]byte, payloadLen-1)
+		copy(payload.Content, buffer[pos+1:])
+
+		if v, ok := opts[ContentFormat]; ok && len(v) > 0 {
+			if be, err := ToBigEndianNumber(v[0]); err == nil {
+				var c ContentType
+				if b, casts := be.(uint8); casts {
+					c = ContentType(b)
+				} else if u, casts := be.(uint16); casts {
+					c = ContentType(u)
+				} else {
+					return nil, errors.New("invalid content format")
+				}
+				payload.Type = &c
+			} else {
+				return nil, err
+			}
+		}
+		// the case that the content format is not provided
+		// is handled in message.Validate()
 	}
 
 	msg := &Message{
@@ -210,9 +242,9 @@ func (m *Message) ToBytes() []byte {
 
 	pkt.Write(encodeOptions(m.Options))
 
-	if len(m.Payload) > 0 {
+	if len(m.Payload.Content) > 0 {
 		pkt.WriteByte(0xff)
-		pkt.Write(m.Payload)
+		pkt.Write(m.Payload.Content)
 	}
 	return pkt.Bytes()
 }
@@ -231,14 +263,14 @@ func (m *Message) String() string {
 
 // Returns true, if message contains an option of given code.
 func (m *Message) HasOption(opt OptionNumberType) bool {
-	_, ok := (*m.Options)[opt]
-	return ok
+	o, ok := (*m.Options)[opt]
+	return ok && len(o) > 0
 }
 
 // Validates the message, returning one of the ok codes, if message is alright,
 // otherwise specific error is returned.
 func (m *Message) Validate() *CodeType {
-	if m.Payload != nil && !m.HasOption(ContentFormat) {
+	if m.Payload.Content != nil && m.Payload.Type == nil {
 		return BadRequest
 	}
 	return Ok

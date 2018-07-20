@@ -119,7 +119,7 @@ func (m messageTokenBuilder) Option(opt OptionNumberType, valueTypes ...OptionVa
 }
 
 // WithPayload provides a payload of given type to the message builder.
-func (m messageTokenBuilder) WithPayload(cType ContentType, payload PayloadType) messagePayloadBuilder {
+func (m messageTokenBuilder) WithPayload(cType ContentType, payload []byte) messagePayloadBuilder {
 	if cType < 256 {
 		(*m.msgCtx.options)[ContentFormat] = []OptionValueType{[]byte{byte(cType)}}
 	} else {
@@ -127,7 +127,10 @@ func (m messageTokenBuilder) WithPayload(cType ContentType, payload PayloadType)
 		binary.BigEndian.PutUint16(b, uint16(cType))
 		(*m.msgCtx.options)[ContentFormat] = []OptionValueType{b}
 	}
-	m.msgCtx.payload = payload
+	m.msgCtx.payload = PayloadType{
+		Type:    &cType,
+		Content: payload,
+	}
 	return messagePayloadBuilder{m.msgCtx}
 }
 
