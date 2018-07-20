@@ -231,8 +231,6 @@ func (server *Server) routeRequest(msg *Message) *Message {
 		// no path in message, bad request
 		return NewBadRequestResponseMessage(msg)
 	}
-	// should never happen
-	return NewInternalServerErrorResponseMessage(msg)
 }
 
 func (s *Server) AddResource(resource *Resource) {
