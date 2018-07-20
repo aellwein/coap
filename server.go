@@ -1,12 +1,14 @@
 package coap
 
 import (
+	"bytes"
 	"encoding/hex"
 	"errors"
 	"fmt"
 	"github.com/aellwein/slf4go"
 	_ "github.com/aellwein/slf4go-logrus-adaptor"
 	"net"
+	"strings"
 )
 
 type CoapPort uint16
@@ -17,11 +19,13 @@ const (
 )
 const MaxPacketSize = 2048
 
+type resourceMap map[string]*Resource
+
 type Server struct {
 	addr       *net.UDPAddr
 	conn       *net.UDPConn
 	parameters TransmissionParameters
-	resources  map[string]*Resource
+	resources  resourceMap
 }
 
 var logger slf4go.Logger
@@ -30,6 +34,29 @@ var logger slf4go.Logger
 func (server Server) String() string {
 	return fmt.Sprintf("Server{ addr=%v, parameters=%v, conn=%v, resources=%v}",
 		server.addr, server.parameters, server.conn, server.resources)
+}
+
+func (r resourceMap) String() string {
+	var s bytes.Buffer
+	m := make([]string, 0)
+	for k, v := range r {
+		s.WriteString(fmt.Sprintf("{ '%v': [ ", k))
+		if (*v).OnPOST != nil {
+			m = append(m, "POST")
+		}
+		if (*v).OnGET != nil {
+			m = append(m, "GET")
+		}
+		if (*v).OnPUT != nil {
+			m = append(m, "PUT")
+		}
+		if (*v).OnDELETE != nil {
+			m = append(m, "DELETE")
+		}
+		s.WriteString(strings.Join(m, ","))
+		s.WriteString(" ]}")
+	}
+	return s.String()
 }
 
 func newServer(port CoapPort, parameters TransmissionParameters, resources ...*Resource) (*Server, error) {

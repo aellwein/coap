@@ -33,7 +33,7 @@ func DefaultTransmissionParameters() TransmissionParameters {
 //	logger.Debugf("parameters: %v", params)
 //}
 
-func (p *TransmissionParameters) String() string {
-	return fmt.Sprintf("TransmissionParameters{ AckTimeout: %v, AckRandomFactor: %v, MaxRetransmit: %v, NStart: %v, DefaultLeisure: %v, ProbingRate: %v }",
+func (p TransmissionParameters) String() string {
+	return fmt.Sprintf("{ AckTimeout: %v, AckRandomFactor: %v, MaxRetransmit: %v, NStart: %v, DefaultLeisure: %v, ProbingRate: %v }",
 		p.AckTimeout, p.AckRandomFactor, p.MaxRetransmit, p.NStart, p.DefaultLeisure, p.ProbingRate)
 }
