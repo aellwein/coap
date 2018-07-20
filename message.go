@@ -228,3 +228,18 @@ func (m *Message) String() string {
 		m.Payload,
 		m.Source)
 }
+
+// Returns true, if message contains an option of given code.
+func (m *Message) HasOption(opt OptionNumberType) bool {
+	_, ok := (*m.Options)[opt]
+	return ok
+}
+
+// Validates the message, returning one of the ok codes, if message is alright,
+// otherwise specific error is returned.
+func (m *Message) Validate() *CodeType {
+	if m.Payload != nil && !m.HasOption(ContentFormat) {
+		return BadRequest
+	}
+	return Ok
+}
