@@ -157,20 +157,68 @@ type messagesTest struct {
 func TestNewResponseMessage_Auto(t *testing.T) {
 	var msgs = []messagesTest{
 		{
-			code:       InternalServerError,
-			createFunc: NewInternalServerErrorResponseMessage,
+			code:       BadRequest,
+			createFunc: NewBadRequestResponseMessage,
+		},
+		{
+			code:       Unauthorized,
+			createFunc: NewUnauthorizedResponseMessage,
+		},
+		{
+			code:       BadOption,
+			createFunc: NewBadOptionResponseMessage,
+		},
+		{
+			code:       Forbidden,
+			createFunc: NewForbiddenResponseMessage,
+		},
+		{
+			code:       NotFound,
+			createFunc: NewNotFoundResponseMessage,
 		},
 		{
 			code:       MethodNotAllowed,
 			createFunc: NewMethodNotAllowedResponseMessage,
 		},
 		{
-			code:       BadRequest,
-			createFunc: NewBadRequestResponseMessage,
+			code:       NotAcceptable,
+			createFunc: NewNotAcceptableResponseMessage,
 		},
 		{
-			code:       NotFound,
-			createFunc: NewNotFoundResponseMessage,
+			code:       PreconditionFailed,
+			createFunc: NewPreconditionFailedResponseMessage,
+		},
+		{
+			code:       RequestEntityTooLarge,
+			createFunc: NewRequestEntityTooLargeResponseMessage,
+		},
+		{
+			code:       UnsupportedContentFormat,
+			createFunc: NewUnsupportedContentFormatResponseMessage,
+		},
+		{
+			code:       InternalServerError,
+			createFunc: NewInternalServerErrorResponseMessage,
+		},
+		{
+			code:       NotImplemented,
+			createFunc: NewNotImplementedResponseMessage,
+		},
+		{
+			code:       BadGateway,
+			createFunc: NewBadGatewayResponseMessage,
+		},
+		{
+			code:       ServiceUnavailable,
+			createFunc: NewServiceUnavailableResponseMessage,
+		},
+		{
+			code:       GatewayTimeout,
+			createFunc: NewGatewayTimeoutResponseMessage,
+		},
+		{
+			code:       ProxyingNotSupported,
+			createFunc: NewProxyingNotSupportedResponseMessage,
 		},
 	}
 
