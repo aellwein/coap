@@ -32,27 +32,33 @@ type messageContext struct {
 	token     *TokenType
 	source    *net.UDPAddr
 	options   *OptionsType
-	payload   PayloadType
+	payload   *PayloadType
+}
+
+// NewMessageBuilderOfType creates a new message builder for message of given type.
+func NewMessageBuilderOfType(mt MessageType) messageBuilder {
+	opts := make(OptionsType)
+	return messageBuilder{&messageContext{mType: mt, options: &opts}}
 }
 
 // NewConfirmableMessageBuilder creates a new message builder for a confirmable message.
 func NewConfirmableMessageBuilder() messageBuilder {
-	return messageBuilder{&messageContext{mType: Confirmable}}
+	return NewMessageBuilderOfType(Confirmable)
 }
 
 // NewAcknowledgementMessageBuilder creates a new message builder for an acknowledgement message.
 func NewAcknowledgementMessageBuilder() messageBuilder {
-	return messageBuilder{&messageContext{mType: Acknowledgement}}
+	return NewMessageBuilderOfType(Acknowledgement)
 }
 
 // NewResetMessageBuilder creates a new message builder for a reset message.
 func NewResetMessageBuilder() messageBuilder {
-	return messageBuilder{&messageContext{mType: Reset}}
+	return NewMessageBuilderOfType(Reset)
 }
 
 // NewNonConfirmableMessageBuilder creates a new message builder for a non-confirmable message.
 func NewNonConfirmableMessageBuilder() messageBuilder {
-	return messageBuilder{&messageContext{mType: Reset}}
+	return NewMessageBuilderOfType(NonConfirmable)
 }
 
 // Code builder method provides the message builder with message code.
@@ -127,7 +133,7 @@ func (m messageTokenBuilder) WithPayload(cType ContentType, payload []byte) mess
 		binary.BigEndian.PutUint16(b, uint16(cType))
 		(*m.msgCtx.options)[ContentFormat] = []OptionValueType{b}
 	}
-	m.msgCtx.payload = PayloadType{
+	m.msgCtx.payload = &PayloadType{
 		Type:    &cType,
 		Content: payload,
 	}

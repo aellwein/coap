@@ -638,3 +638,106 @@ func TestMessage_ValidateOk(t *testing.T) {
 
 	})
 }
+
+func TestMessage_HasOption(t *testing.T) {
+	for _, mt := range AllMessageTypes {
+		c.Convey(fmt.Sprintf("Given a message of type '%v' with option Uri-Path", mt), t, func() {
+
+			m := NewMessageBuilderOfType(mt).
+				Code(POST).
+				WithRandomMessageId().
+				WithRandomToken().
+				Option(UriPath, []byte("rd")).
+				Build()
+
+			c.Convey("When Uri-Path option is expected via HasOption", func() {
+				exists := m.HasOption(UriPath)
+
+				c.Convey("Then the result is true", func() {
+					c.So(exists, c.ShouldBeTrue)
+				})
+			})
+		})
+	}
+}
+
+func TestMessage_HasNoOption(t *testing.T) {
+	for _, mt := range AllMessageTypes {
+		c.Convey(fmt.Sprintf("Given a message of type '%v' with NO option Uri-Path", mt), t, func() {
+
+			m := NewMessageBuilderOfType(mt).
+				Code(POST).
+				WithRandomMessageId().
+				WithRandomToken().
+				Build()
+
+			c.Convey("When Uri-Path option is expected via HasOption", func() {
+				exists := m.HasOption(UriPath)
+
+				c.Convey("Then the result is false", func() {
+					c.So(exists, c.ShouldBeFalse)
+				})
+			})
+		})
+	}
+}
+
+func TestMessage_ContentFormatUint16(t *testing.T) {
+	c.Convey("Given a message with content format (uint16)", t, func() {
+		b := NewConfirmableMessageBuilder().
+			Code(POST).
+			WithRandomMessageId().
+			WithRandomToken().
+			WithPayload(0x1337, []byte("some payload")).
+			Build().ToBytes()
+
+		c.Convey("When message is decoded", func() {
+			msg, _ := NewMessageFromBytes(b)
+
+			c.Convey("Then the payload type is equal the expected type", func() {
+				c.So(0x1337, c.ShouldEqual, *msg.Payload.Type)
+			})
+		})
+	})
+}
+
+func TestMessage_ContentFormatUint8(t *testing.T) {
+	c.Convey("Given a message with content format (uint8)", t, func() {
+		b := NewConfirmableMessageBuilder().
+			Code(POST).
+			WithRandomMessageId().
+			WithRandomToken().
+			WithPayload(0xCD, []byte("some payload")).
+			Build().ToBytes()
+
+		c.Convey("When message is decoded", func() {
+			msg, _ := NewMessageFromBytes(b)
+
+			c.Convey("Then the payload type is equal the expected type", func() {
+				c.So(0xCD, c.ShouldEqual, *msg.Payload.Type)
+			})
+		})
+	})
+}
+
+func TestMessage_InvalidContentFormat(t *testing.T) {
+	c.Convey("Given a message with invalid content format", t, func() {
+		m := NewConfirmableMessageBuilder().
+			Code(POST).
+			WithRandomMessageId().
+			WithRandomToken().
+			Option(ContentFormat, []byte{0xCA, 0xFE, 0xBA, 0xBE}).
+			Build()
+
+		m.Payload = new(PayloadType)
+		m.Payload.Content = []byte("some payload")
+
+		c.Convey("When message is decoded", func() {
+			_, err := NewMessageFromBytes(m.ToBytes())
+
+			c.Convey("Then an error is returned", func() {
+				c.So(err, c.ShouldNotBeNil)
+			})
+		})
+	})
+}

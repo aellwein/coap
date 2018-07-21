@@ -47,6 +47,8 @@ const (
 	Reset
 )
 
+var AllMessageTypes = []MessageType{Confirmable, NonConfirmable, Acknowledgement, Reset}
+
 type CodeClassType uint8
 type CodeDetailType uint8
 
@@ -64,7 +66,7 @@ type Message struct {
 	Token     *TokenType
 	Source    *net.UDPAddr
 	Options   *OptionsType
-	Payload   PayloadType
+	Payload   *PayloadType
 }
 
 // message type to string
@@ -117,21 +119,18 @@ type PayloadType struct {
 	Content []byte
 }
 
-func (p PayloadType) String() string {
-	if p.Type != nil {
-		switch *p.Type {
+func (p *PayloadType) String() string {
+	switch *p.Type {
 
-		case ContentTypeTextPlain,
-			ContentTypeApplicationLinkFormat,
-			ContentTypeApplicationXml,
-			ContentTypeApplicationJson:
-			return string(p.Content)
+	case ContentTypeTextPlain,
+		ContentTypeApplicationLinkFormat,
+		ContentTypeApplicationXml,
+		ContentTypeApplicationJson:
+		return string(p.Content)
 
-		default:
-			return HexContent(p.Content)
-		}
+	default:
+		return HexContent(p.Content)
 	}
-	return HexContent(p.Content)
 }
 
 // Initializes random number generator.
@@ -190,9 +189,10 @@ func decode(buffer []byte, peer *net.UDPAddr) (*Message, error) {
 	// parse payload, if any
 	pos += int(tokenLength) + 4
 	payloadLen := len(buffer) - pos
-	var payload PayloadType
+	var payload *PayloadType
 
 	if payloadLen > 0 {
+		payload = new(PayloadType)
 		payload.Content = make([]byte, payloadLen-1)
 		copy(payload.Content, buffer[pos+1:])
 
@@ -251,7 +251,7 @@ func (m *Message) ToBytes() []byte {
 
 	pkt.Write(encodeOptions(m.Options))
 
-	if len(m.Payload.Content) > 0 {
+	if m.Payload != nil && len(m.Payload.Content) > 0 {
 		pkt.WriteByte(0xff)
 		pkt.Write(m.Payload.Content)
 	}
@@ -279,7 +279,7 @@ func (m *Message) HasOption(opt OptionNumberType) bool {
 // Validates the message, returning one of the ok codes, if message is alright,
 // otherwise specific error is returned.
 func (m *Message) Validate() *CodeType {
-	if m.Payload.Content != nil && m.Payload.Type == nil {
+	if m.Payload.Content != nil && !m.HasOption(ContentFormat) {
 		return BadRequest
 	}
 	return Ok
