@@ -279,7 +279,7 @@ func (m *Message) HasOption(opt OptionNumberType) bool {
 // Validates the message, returning one of the ok codes, if message is alright,
 // otherwise specific error is returned.
 func (m *Message) Validate() *CodeType {
-	if m.Payload.Content != nil && !m.HasOption(ContentFormat) {
+	if m.Payload != nil && m.Payload.Content != nil && !m.HasOption(ContentFormat) {
 		return BadRequest
 	}
 	return Ok
