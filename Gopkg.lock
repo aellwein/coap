@@ -16,8 +16,8 @@
 [[projects]]
   name = "github.com/aellwein/slf4go-logrus-adaptor"
   packages = ["."]
-  revision = "83b5a253e0c3c3b28eadd0cc7f81208c2a1b534e"
-  version = "v0.4"
+  revision = "27db8e4f2222a352ab96f741d8bef712487cabd9"
+  version = "v0.4.1"
 
 [[projects]]
   branch = "master"
