@@ -2,9 +2,10 @@ package coap
 
 import (
 	"fmt"
-	c "github.com/smartystreets/goconvey/convey"
 	"reflect"
 	"testing"
+
+	c "github.com/smartystreets/goconvey/convey"
 )
 
 type testMatrix struct {

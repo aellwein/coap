@@ -5,10 +5,12 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/aellwein/slf4go"
-	_ "github.com/aellwein/slf4go-logrus-adaptor"
 	"net"
 	"strings"
+
+	"github.com/aellwein/slf4go"
+	// include adapter implementation
+	_ "github.com/aellwein/slf4go-logrus-adaptor"
 )
 
 type CoapPort uint16

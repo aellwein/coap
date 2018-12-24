@@ -5,10 +5,11 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/aellwein/slf4go"
 	"math/rand"
 	"net"
 	"time"
+
+	"github.com/aellwein/slf4go"
 )
 
 /* ERRORS */

@@ -3,9 +3,10 @@ package coap
 import (
 	"encoding/binary"
 	"fmt"
-	c "github.com/smartystreets/goconvey/convey"
 	"net"
 	"testing"
+
+	c "github.com/smartystreets/goconvey/convey"
 )
 
 func TestNewConfirmableMessageBuilder(t *testing.T) {

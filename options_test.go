@@ -1,8 +1,9 @@
 package coap
 
 import (
-	c "github.com/smartystreets/goconvey/convey"
 	"testing"
+
+	c "github.com/smartystreets/goconvey/convey"
 )
 
 func TestUriPathOptionToString(t *testing.T) {
