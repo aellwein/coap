@@ -1,16 +1,11 @@
 
 all:	fmt vet build test
 
-dep:	ensure
-
-ensure:
-	dep ensure -v
-
 fmt:
 	go fmt ./...
 
 vet:
-	go vet -v ./...
+	go vet ./...
 
 build:
 	go build ./...
@@ -21,6 +16,3 @@ coveralls:
 
 test:
 	go test ./...
-
-distclean:
-	$(RM) -r vendor
