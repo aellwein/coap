@@ -6,5 +6,8 @@ go:
 before_install:
   - go get github.com/mattn/goveralls
 
+env:
+  - GO111MODULES=on
+
 script:
-  - make vendor && make && make coveralls
+  - make && make coveralls
