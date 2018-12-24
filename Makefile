@@ -10,8 +10,8 @@ vet:
 build:
 	go build ./...
 
-download:
-	go mod download
+vendor:
+	go mod vendor
 
 coveralls:
 	go test -v -covermode=count -coverprofile=coverage.out ./...

@@ -7,4 +7,4 @@ before_install:
   - go get github.com/mattn/goveralls
 
 script:
-  - make download && make && make coveralls
+  - make vendor && make && make coveralls
